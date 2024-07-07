@@ -10,5 +10,5 @@ export default class ApiResponse{
     this.success = 200 <= statusCode && statusCode <=400;
   }
 }
-const res = new ApiResponse();
-console.log(res);
+// const res = new ApiResponse();
+// console.log(res);

@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: [true, "fullName is required"],
+      default: 'generate a random user'
+      // required: [true, "fullName is required"],
     },
     password: {
       type: String,
@@ -40,19 +41,20 @@ const userSchema = new mongoose.Schema(
       unique: [true, "email already registered"],
       required: [true, "email is required"],
       lowercase: true,
+      index: true
     },
     phoneNumber: {
       type: Number,
-      unique: [true, "phone number already registered"],
-      required: [true, "phone number is required"],
+      // unique: [true, "phone number already registered"],
+      // required: [true, "phone number is required"],
     },
     DOB: {
       type: Date,
-      required: [true, "DOB is required"],
+      // required: [true, "DOB is required"],
     },
     role: {
       type: String,
-      required: [true, "role is required"],
+      // required: [true, "role is required"],
       enum: ["user", "admin"],
       default: "user",
     },
@@ -60,7 +62,7 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Order",
-        required: true,
+        // required: true,
       },
     ],
 
@@ -95,8 +97,8 @@ userSchema.methods.validatePassword = async function (password) {
   }
 };
 
-userSchema.methods.getAccessToken = function () {
-  jwt.sign(
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
     },
@@ -105,8 +107,8 @@ userSchema.methods.getAccessToken = function () {
   );
 }
 
-userSchema.methods.getRefreshToken = function () {
-  jwt.sign(
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
     },

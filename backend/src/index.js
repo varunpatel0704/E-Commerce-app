@@ -5,7 +5,9 @@ const port = process.env.PORT || 8080;
 
 (async function connectDB() {
   try {
-    await mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`);
+    await mongoose.connect('mongodb://0.0.0.0:27017/', {
+      dbName: 'ecommerce'
+    });
     console.log("Connected to MongoDB...");
 
     app.listen(port, () => {
@@ -13,7 +15,7 @@ const port = process.env.PORT || 8080;
     });
 
   } catch (error) {
-    console.log("Error: could not connect to MongoDB ");
+    console.log("Error: could not connect to MongoDB ", error);
     process.exit(1);
   }
 })();

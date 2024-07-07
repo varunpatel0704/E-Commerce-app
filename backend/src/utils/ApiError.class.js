@@ -8,5 +8,5 @@ export default class ApiError extends Error{
     this.name = this.constructor.name;
   }
 }
-const res = new ApiError();
-console.log(res);
+// const res = new ApiError();
+// console.log(res);
