@@ -1,4 +1,5 @@
 export default function errorHandler(err, req, res, next){
   // will receive error thrown from routehandlers
-  res.status(err.statusCode).json({message: err.message, error:err});
+  const status = err.statusCode||500
+  res.status(status).json({message: err.message, error:err});
 }

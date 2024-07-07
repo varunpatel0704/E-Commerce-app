@@ -5,20 +5,18 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: true
+  secure: true,
 };
 
-const userSignUp = asyncHandler(async function (req, res, next) {
+const signUp = asyncHandler(async function (req, res, next) {
+  // get user credentials from request body
   const { email, password } = req.body;
 
-  // get the mandatory detials => email, password
-  if (!email || !password) return next(new ApiError(400, "All fields are mandatory"));
-  
-  console.log(email, password);
+  // make sure required details are provided in the request
+  if (!email || !password)
+    return next(new ApiError(400, "All fields are mandatory"));
 
-  //check for existing user.
-  // const res = User.exists({$or: [{email}, {phoneNumber}]});
-
+  // throw error if user has already signed up
   const existingUser = await User.exists({ email });
   if (existingUser) next(new ApiError(400, "User already exists"));
 
@@ -34,12 +32,46 @@ const userSignUp = asyncHandler(async function (req, res, next) {
   newUser.refreshToken = refreshToken;
 
   await newUser.save();
-  
+
   return res
     .status(201)
     .cookie("refreshToken", refreshToken, cookieOptions)
     .cookie("accessToken", accessToken, cookieOptions)
-    .json(new ApiResponse(201, 'User sign up successful', accessToken));
+    .json(new ApiResponse(201, "Sign up successful", accessToken));
 });
 
-export {userSignUp};
+const login = asyncHandler(async function (req, res, next) {
+  // get user credentials
+  const { email, phoneNumber, password } = req.body;
+  if ((!email && !phoneNumber) || !password) // either email or phone number has to be provided, along with the password ofc
+    return next(new ApiError(400, "All fields are mandatory"));
+
+  // fetch user
+  const existingUser = await User.findOne({ $or: [{ email }, { phoneNumber }] });
+  if (!existingUser) return next(new ApiError(404, "User not found"));
+
+  // validate password
+  const isPassValid = await existingUser.validatePassword(password);
+  if (!isPassValid) return next(new ApiError(401, "Invalid password"));
+
+  // issue jwt tokens
+  const accessToken = existingUser.generateAccessToken();
+  const refreshToken = existingUser.generateRefreshToken();
+
+  // save the token in db
+  existingUser.refreshToken = refreshToken;
+  await existingUser.save();
+
+  // send the tokens in res object
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(new ApiResponse(200, "Login successful", accessToken));
+});
+
+const logout = asyncHandler(async function(req, res, next){
+  
+});
+
+export { signUp, login };
