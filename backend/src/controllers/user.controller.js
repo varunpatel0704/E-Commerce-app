@@ -38,7 +38,7 @@ const signUp = asyncHandler(async function (req, res, next) {
     .status(201)
     .cookie("refreshToken", refreshToken, cookieOptions)
     .cookie("accessToken", accessToken, cookieOptions)
-    .json(new ApiResponse(201, "Sign up successful", accessToken));
+    .json(new ApiResponse(201, "Sign up successful", {role:savedUser.role, accessToken}));
 });
 
 const login = asyncHandler(async function (req, res, next) {
@@ -64,14 +64,14 @@ const login = asyncHandler(async function (req, res, next) {
 
   // save the token in db
   existingUser.refreshToken = refreshToken;
-  await existingUser.save();
+  const savedUser = await existingUser.save();
 
   // send the tokens in res object
   return res
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponse(200, "Logged In", accessToken));
+    .json(new ApiResponse(200, "Logged In", {role:savedUser.role, accessToken}));
 });
 
 const logout = asyncHandler(async function (req, res, next) {

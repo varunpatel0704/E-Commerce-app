@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useLoginMutation } from "../features/auth/authApiSlice.js";
+import { loggedIn } from "../features/auth/authSlice.js";
+import { useDispatch } from "react-redux";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -7,13 +10,36 @@ function RegisterPage() {
     password: "",
   });
 
+  const dispatch = useDispatch();
+  const [login, {error}] = useLoginMutation();
+  // console.log(error?.status);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async function(e){
     e.preventDefault();
+    try {
+      const res = await login({email: formData.email, password: formData.password}).unwrap();
+      // console.log('login request result: ',res);
+      if(res){
+        const {accessToken, role} = res.data;
+        dispatch(loggedIn(formData.email, role, accessToken));
+        console.log('logged in');
+      }
+
+    } catch (error) {
+      if(!error?.data)
+        console.log('no response from server');
+
+      else if(error.status === 404 || error.status === 401)
+        console.log('invalid email/password');
+
+      else  
+        console.log('login failed');
+    }
+
   };
 
   return (
@@ -21,7 +47,7 @@ function RegisterPage() {
       <h1 className="text-5xl relative"><Link to='/' >Logo</Link></h1>
       <div className="flex flex-col justify-center items-center gap-5 border rounded-md sm:w-[30%] w-[80%]  p-5 shadow-md">
         <h2 className="w-full p-0.5 text-2xl text-center">Login</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+        <form className="flex flex-col gap-5 w-full">
           <input
             className="input-base-style w-full"
             type="email"
@@ -40,10 +66,11 @@ function RegisterPage() {
             onChange={handleChange}
             required
           />
-
+          {(error?.status === 401)&&<p>Invalid email/password</p>}
           <button
             type="submit"
             className="public-site-btn rounded shado py-2.5 mt-5"
+            onClick={handleSubmit}
           >
             Login
           </button>

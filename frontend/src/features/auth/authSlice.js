@@ -18,7 +18,7 @@ const authSlice = createSlice({
     // },
 
     //alternate way
-    login:{
+    loggedIn:{
       reducer(state, action){
         const { user, role, accessToken } = action.payload;
         state.user = user;
@@ -37,7 +37,7 @@ const authSlice = createSlice({
       }
     },
 
-    logout(state, action){
+    loggedOut(state, action){
       state.user = null;
       state.accessToken = null;
     }
@@ -49,7 +49,7 @@ const authReducer = authSlice.reducer;
 export default authReducer
 
 // action creators, will be called inside the dispatch method of useDispatch hook
-export const {login, logout} = authSlice.actions;
+export const {loggedIn, loggedOut} = authSlice.actions;
 
 // selector functions to be passed to the useSelector hook
 export const selectCurrentUser = (state)=>state.auth.user;
