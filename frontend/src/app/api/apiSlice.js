@@ -19,7 +19,7 @@ const baseQueryWithReAuth = async function(args, api, extraOptions){
   try {    
     result = await baseQuery(args, api, extraOptions);
     // console.log('original request result: ', result);
-    
+
     // received a status for unauthorized request, attempt re-auth
     if(result.error?.status === 401){
       console.log('attempting re-auth... with refresh token');

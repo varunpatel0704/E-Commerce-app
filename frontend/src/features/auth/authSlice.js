@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
-  user: null, 
+  id: null, 
   role: null,
   accessToken: null
 }
@@ -20,16 +20,16 @@ const authSlice = createSlice({
     //alternate way
     loggedIn:{
       reducer(state, action){
-        const { user, role, accessToken } = action.payload;
-        state.user = user;
+        const { id, role, accessToken } = action.payload;
+        state.id = id;
         state.role = role
         state.accessToken = accessToken;
       },
       
-      prepare(user, role, accessToken){ // creates the payload object for us. we simply need to pass the required values in the action creator instead of the entire object.
+      prepare(id, role, accessToken){ // creates the payload object for us. we simply need to pass the required values in the action creator instead of the entire object.
         return {
           payload:{
-            user,
+            id,
             role,
             accessToken
           }
@@ -38,8 +38,9 @@ const authSlice = createSlice({
     },
 
     loggedOut(state, action){
-      state.user = null;
       state.accessToken = null;
+      state.id = null;
+      state.role = null;
     }
   }
 })
@@ -52,6 +53,6 @@ export default authReducer
 export const {loggedIn, loggedOut} = authSlice.actions;
 
 // selector functions to be passed to the useSelector hook
-export const selectCurrentUser = (state)=>state.auth.user;
-export const selectCurrentToken = (state)=>state.auth.token;
-export const selectCurrentRole = (state)=>state.auth.role;
+// export const selectCurrentUser = (state)=>state.auth.user;
+// export const selectCurrentToken = (state)=>state.auth.token;
+// export const selectCurrentRole = (state)=>state.auth.role;

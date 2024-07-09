@@ -10,11 +10,32 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar.jsx";
-
-const user = { id: "abcd", role: "admin" };
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../features/auth/authApiSlice.js";
+import { loggedOut } from "../features/auth/authSlice.js";
 
 function Header() {
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
+  
+  const user = useSelector(state=>state.auth);
+  // console.log('current user auth state ',user);
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+
+  const handleLogOut = async ()=>{
+    try {
+      const res = await logout();
+      console.log('loggedOut ', res);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    } finally{
+      dispatch(loggedOut());
+    }
+  }
+
   const dialog = (
     <dialog
       open={isOpen}
@@ -43,7 +64,7 @@ function Header() {
             Orders
           </p>
         </Link>
-        <button>
+        <button onClick={handleLogOut}>
           <p className="flex flex-row justify-start items-center gap-3 header-dialog-link">
             <FaSignOutAlt /> Logout
           </p>
@@ -52,7 +73,6 @@ function Header() {
     </dialog>
   );
 
-  const navigate = useNavigate();
   
   function onSearch(){
     navigate('/product-search');
@@ -69,7 +89,7 @@ function Header() {
         </div>
 
         <div className="h-full flex flex-col-reverse sm:flex-row justify-center items-center gap-5 sm:gap-8 py-1 px-3 sm:px-2 relative mr-2">
-          {user.id ? (
+          {user.accessToken ? (
             <>
               <button
                 className="p-1 sm:p-3 sm:text-xl"

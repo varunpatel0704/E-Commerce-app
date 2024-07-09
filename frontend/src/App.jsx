@@ -5,8 +5,8 @@ import Layout from "./layouts/Layout.jsx";
 import Checkout from "./pages/Checkout.jsx"; //implement lazy
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import ProductSearch from "./pages/ProductSearch.jsx";
 import Register from "./pages/Register.jsx";
+import ProductSearch from "./pages/ProductSearch.jsx";
 import Orders from "./pages/Orders.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -22,6 +22,7 @@ import BarCharts from "./pages/admin/BarCharts.jsx";
 import PieCharts from "./pages/admin/PieCharts.jsx";
 import LineCharts from "./pages/admin/LineCharts.jsx";
 import GenerateCoupon from "./pages/admin/GenerateCoupon.jsx";
+import RequireAuth from "./features/auth/RequireAuth.jsx";
 // import ProductForm from "./components/ProductForm.jsx";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
@@ -36,49 +37,54 @@ function App() {
 
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          
+
           <Route path="product-search" element={<ProductSearch />} />
-          <Route path="/product/:id" element={<ProductDetails/>} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="cart" element={<Cart />} />
 
           {/* Login required for below routes */}
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="orders/:orderId" element={<OrderDetails />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="checkout" element={<Checkout />} />
+          <Route element={<RequireAuth />}>
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/:orderId" element={<OrderDetails />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+          
         </Route>
 
         {/* admin role required for below routes */}
-        <Route path="/admin" element={<AdminLayout />}>          
-          <Route path="dashboard">
 
-            <Route path="insights" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route element={<RequireAuth adminRoute={true} />}>
 
-            <Route path="products">
-              <Route index element={<AdminProducts />} />
-              <Route path="new" element={<NewProductForm />} />
-              <Route path="edit/:id" element={<EditProductForm />} />
-              {/* <Route path="new" element={<ProductForm/>} /> */}
+            <Route path="dashboard">
+              <Route path="insights" element={<AdminDashboard />} />
+
+              <Route path="products">
+                <Route index element={<AdminProducts />} />
+                <Route path="new" element={<NewProductForm />} />
+                <Route path="edit/:id" element={<EditProductForm />} />
+                {/* <Route path="new" element={<ProductForm/>} /> */}
+              </Route>
+
+              <Route path="users" element={<AdminUsers />} />
+
+              <Route path="orders">
+                <Route index element={<AdminOrders />} />
+                <Route path="manage/:id" element={<ManageOrder />} />
+              </Route>
             </Route>
 
-            <Route path="users" element={<AdminUsers />} />
-
-            <Route path="orders">
-              <Route index element={<AdminOrders />} />
-              <Route path="manage/:id" element={<ManageOrder/>} />
+            <Route path="analytics">
+              <Route path="bar" element={<BarCharts />} />
+              <Route path="pie" element={<PieCharts />} />
+              <Route path="line" element={<LineCharts />} />
             </Route>
 
-          </Route>
+            <Route path="utilities">
+              <Route path="generateCoupon" element={<GenerateCoupon />} />
+            </Route>
 
-          <Route path="analytics">
-            <Route path="bar" element={<BarCharts/>} />
-            <Route path="pie" element={<PieCharts/>} />
-            <Route path="line" element={<LineCharts/>} />
-          </Route>
-
-          <Route path="utilities">
-            <Route path="generateCoupon" element={<GenerateCoupon/>} />
           </Route>
 
         </Route>

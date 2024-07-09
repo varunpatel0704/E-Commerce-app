@@ -1,60 +1,75 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../features/auth/authApiSlice.js";
-import { loggedIn } from "../features/auth/authSlice.js";
+import { loggedIn, loggedOut } from "../features/auth/authSlice.js";
 import { useDispatch } from "react-redux";
 
-function RegisterPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState(null);
+  const navigate = useNavigate();
+  // useEffect(()=>{
+  //   setErr(null);
+  // }, [email, password])
 
   const dispatch = useDispatch();
-  const [login, {error}] = useLoginMutation();
-  // console.log(error?.status);
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [login, {}] = useLoginMutation();
 
-  const handleSubmit = async function(e){
+  const disabled = !email || !password;
+
+  const handleSubmit = async function (e) {
     e.preventDefault();
     try {
-      const res = await login({email: formData.email, password: formData.password}).unwrap();
+      const res = await login({ email, password }).unwrap();
       // console.log('login request result: ',res);
-      if(res){
-        const {accessToken, role} = res.data;
-        dispatch(loggedIn(formData.email, role, accessToken));
-        console.log('logged in');
+      if (res?.data) {
+        const { accessToken, role } = res.data;
+        dispatch(loggedIn(email, role, accessToken)); //don't need to wrap data in object as payload creator will handle it
+        console.log("logged in");
+        setEmail("");
+        setPassword("");
+        navigate('/');
       }
-
     } catch (error) {
-      if(!error?.data)
-        console.log('no response from server');
+      dispatch(loggedOut());
 
-      else if(error.status === 404 || error.status === 401)
-        console.log('invalid email/password');
+      if (!error?.data) console.log("no response from server");
+      else if (error.status === 401 || error.status === 404)
+        console.log("invalid email/password");
+      else console.log("login failed: ", error);
 
-      else  
-        console.log('login failed');
+      setErr(error);
     }
-
   };
 
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-12">
-      <h1 className="text-5xl relative"><Link to='/' >Logo</Link></h1>
+      <h1 className="text-5xl relative">
+        <Link to="/">Logo</Link>
+      </h1>
       <div className="flex flex-col justify-center items-center gap-5 border rounded-md sm:w-[30%] w-[80%]  p-5 shadow-md">
-        <h2 className="w-full p-0.5 text-2xl text-center">Login</h2>
-        <form className="flex flex-col gap-5 w-full">
+        <h2 className="w-full p-0.5 text-2xl text-center font-medium text-black text-opacity-70">Login</h2>
+        <form
+          onSubmit={(e) => {
+            if (disabled) {
+              alert("Please provide all credentials");
+              return;
+            }
+            handleSubmit(e);
+          }}
+          className="flex flex-col gap-5 w-full"
+        >
           <input
             className="input-base-style w-full"
             type="email"
             name="email"
             placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErr(null);
+            }}
             required
           />
           <input
@@ -62,23 +77,34 @@ function RegisterPage() {
             type="password"
             name="password"
             placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErr(null);
+            }}
             required
           />
-          {(error?.status === 401)&&<p>Invalid email/password</p>}
+          {err?.status === 401 && (
+            <p className="text-red-500">Invalid credentials</p>
+          )}
           <button
+            // disabled={disabled}
             type="submit"
-            className="public-site-btn rounded shado py-2.5 mt-5"
-            onClick={handleSubmit}
+            className="public-site-btn rounded shadow py-2.5 mt-5"
+            // onClick={}
           >
             Login
           </button>
-          <p className="text-sm " >Don't have an account? <span className="text-blue-500" ><Link to="/register">Sign Up</Link></span> </p>
+          <p className="text-sm ">
+            Don't have an account?{" "}
+            <span className="text-blue-500">
+              <Link to="/register">Sign Up</Link>
+            </span>{" "}
+          </p>
         </form>
       </div>
     </main>
   );
 }
 
-export default RegisterPage;
+export default Login;

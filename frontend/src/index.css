@@ -110,6 +110,7 @@
       tbody{
         a{
           &:hover{
+            /* color: rgb(59 130 246); */
             color: rgb(0, 115, 255);
           }
         }
@@ -375,7 +376,7 @@
     }
     background-color: rgb(23, 127, 255);
     color: white;
-    &:hover{
+    &:active{
       opacity: 0.9;
     }
   }
