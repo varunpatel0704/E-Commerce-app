@@ -1,7 +1,6 @@
-import PriceDetails from "../components/PriceDetails.jsx";
-import { CheckoutItem } from "./Checkout.jsx";
 import { Link } from "react-router-dom";
-
+import PriceDetails from "../components/PriceDetails.jsx";
+import { BiArrowBack } from "react-icons/bi";
 function OrderDetails() {
   const order = {
     _id: "",
@@ -30,7 +29,10 @@ function OrderDetails() {
 
   return (
     <main className="bg-white border shadow-md rounded w-full p-4">
-      <h2 className="w-full text-xl font-bold text-black text-opacity-70 tracking-wide">
+      <Link to="/orders">
+        <BiArrowBack />
+      </Link>
+      <h2 className="mt-1 w-full text-xl font-bold text-black text-opacity-70 tracking-wide">
         ORDER DETAILS
       </h2>
       <div className="mt-3 flex w-full justify-between">
@@ -93,7 +95,7 @@ function OrderDetails() {
               Order Item
             </h3>
             <aricle className="flex gap-8 mt-4 border p-2 rounded shadow-sm">
-              <Link to={`/product/${order.orderItem._id}`}>
+              <Link to={`/products/${order.orderItem._id}`}>
                 <img
                   src={order.orderItem.image}
                   alt="order item"
@@ -109,9 +111,6 @@ function OrderDetails() {
             </aricle>
           </div>
 
-
-
-          
           {/* <p>
             <span
               style={{
@@ -123,7 +122,7 @@ function OrderDetails() {
             >
               {status}
             </span>{" "} */}
-            {/*implement optimistic update */}
+          {/*implement optimistic update */}
           {/* </p> */}
           {/* <button
             disabled={status === "Delivered"}

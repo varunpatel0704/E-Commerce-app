@@ -374,6 +374,7 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    outline: none;
     background-color: rgb(23, 127, 255);
     color: white;
     &:active{

@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation, Outlet, Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { loggedOut } from "./authSlice.js";
-import { useEffect } from "react";
 
 function RequireAuth({ adminRoute = false }) {
   const navigate = useNavigate();
@@ -21,11 +20,16 @@ function RequireAuth({ adminRoute = false }) {
   //     navigate("/login", { replace: true, state: { from: location } });
   //   }
   // }, []);
-  if (!accessToken)
+  
+  if (!accessToken){
+    dispatch(loggedOut());
     return <Navigate to={"/login"} replace state={{ from: location }} />;
+  }
 
-  else if (adminRoute && role !== "admin")
+  else if (adminRoute && role !== "admin"){
+    dispatch(loggedOut());    
     return <Navigate to={"/login"} replace state={{ from: location }} />;
+  }
   
   else
     return <Outlet />;

@@ -181,7 +181,7 @@ function ManageOrder() {
           <div className="scroll-hidden h-[367px]">
             <h3 className="w-full font-medium text-lg text-black text-opacity-80">Order Items</h3>
             <aricle className="flex gap-8 mt-4 rounded">
-              <Link to={`/product/${order.orderItem._id}`}>
+              <Link to={`/products/${order.orderItem._id}`}>
                 <img
                   src={order.orderItem.image}
                   alt="order item"

@@ -30,7 +30,7 @@ const columns = [
 // also add product id below the name so that it can be searched and also add the id to dynamic route link
 const data = [
   {
-    photo: <Link to={`/product/${1}`}><img src={src} /></Link>,
+    photo: <Link to={`/products/${1}`}><img src={src} /></Link>,
     name: "Nikon DSLR 400D ultra pro max with 1000x zoom",
     price: "$1200",
     stock: "101",

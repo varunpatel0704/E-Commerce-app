@@ -1,6 +1,7 @@
 import { useState } from "react";
-import Filters from "../components/Filters.jsx";
+import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard.jsx";
+import ProductFilter from "../components/ProductFilter.jsx";
 
 const products = [
   {
@@ -102,13 +103,19 @@ const products = [
 ];
 
 function ProductListing() {
-  const [sortOption, setSortOption] = useState("default");
   const [page, setPage] = useState(1);
   const pages = 10;
+
+  const [searchParams, setSearchParams] = useSearchParams({ category: "all", sortOption: 'default', price:100000 }); // will act as state as well.
+  
   return (
     <div className="w-full h-section flex gap-6 sm:flex-row flex-col">
       <aside className=" border sm:w-[25%] w-full sticky top-0 shadow-md rounded">
-        <Filters onProductSortChange={setSortOption} type='product-search' />
+        {/* <Filters onProductSortChange={setSortOption} type='product-search' /> */}
+        <ProductFilter
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+        />
       </aside>
       <main className=" sm:w-4/5 w-full">
         <div className="flex flex-wrap gap-5">

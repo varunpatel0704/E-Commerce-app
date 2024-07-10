@@ -6,35 +6,39 @@ import {
   FaSignOutAlt,
   FaUser,
   FaUserCircle,
-  FaUserLock
+  FaUserLock,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogoutMutation } from "../features/auth/authApiSlice.js";
 import { loggedOut } from "../features/auth/authSlice.js";
+import toast from "react-hot-toast";
 
 function Header() {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
-  
-  const user = useSelector(state=>state.auth);
+
+  const user = useSelector((state) => state.auth);
   // console.log('current user auth state ',user);
   const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
 
-  const handleLogOut = async ()=>{
+  const handleLogOut = async () => {
     try {
       const res = await logout();
-      console.log('loggedOut ', res);
-      navigate('/');
+      console.log("loggedOut ", res);
+      toast.success('Logged out');
+      
+      setIsOpen(false);
+      navigate("/");
     } catch (error) {
       console.log(error);
-    } finally{
+    } finally {
       dispatch(loggedOut());
     }
-  }
+  };
 
   const dialog = (
     <dialog
@@ -52,13 +56,13 @@ function Header() {
             </p>
           </Link>
         )}
-        <Link to="/profile">
+        <Link to="/profile" onClick={() => setIsOpen(false)}>
           <p className="flex flex-row justify-start items-center gap-3 header-dialog-link">
             <FaUserCircle />
             Profile
           </p>
         </Link>
-        <Link to="/orders">
+        <Link to="/orders" onClick={() => setIsOpen(false)}>
           <p className="flex flex-row justify-start items-center gap-3 header-dialog-link">
             <FaBoxOpen />
             Orders
@@ -73,9 +77,8 @@ function Header() {
     </dialog>
   );
 
-  
-  function onSearch(){
-    navigate('/product-search');
+  function onSearch() {
+    navigate("/products");
   }
 
   return (
@@ -85,7 +88,7 @@ function Header() {
           <span className="sm:text-5xl text-3xl ml-3">
             <Link to="/">Logo</Link>
           </span>
-          <SearchBar onSearch={onSearch}/>
+          <SearchBar onSearch={onSearch} />
         </div>
 
         <div className="h-full flex flex-col-reverse sm:flex-row justify-center items-center gap-5 sm:gap-8 py-1 px-3 sm:px-2 relative mr-2">
@@ -95,18 +98,19 @@ function Header() {
                 className="p-1 sm:p-3 sm:text-xl"
                 onClick={() => setIsOpen(!isOpen)}
                 onMouseEnter={() => setIsOpen(true)}
-                onMouseLeave={() => setIsOpen(false)}                
+                onMouseLeave={() => setIsOpen(false)}
               >
                 <FaUser />
               </button>
               {dialog}
             </>
           ) : (
-            <span className="p-1 sm:p-3 sm:text-xl">
-              <Link to="/login">
+            <Link to="/login">
+              <span className="p-1 sm:p-3 sm:text-xl flex items-center gap-2">
+                Login
                 <FaSignInAlt />
-              </Link>
-            </span>
+              </span>
+            </Link>
           )}
 
           <span className="p-1 sm:p-3 sm:text-xl ">

@@ -23,6 +23,7 @@ import PieCharts from "./pages/admin/PieCharts.jsx";
 import LineCharts from "./pages/admin/LineCharts.jsx";
 import GenerateCoupon from "./pages/admin/GenerateCoupon.jsx";
 import RequireAuth from "./features/auth/RequireAuth.jsx";
+import Products from "./pages/Products.jsx";
 // import ProductForm from "./components/ProductForm.jsx";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
@@ -38,8 +39,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
 
-          <Route path="product-search" element={<ProductSearch />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="products" element={<ProductSearch />} />
+          <Route path="products/:id" element={<ProductDetails />} />
+
           <Route path="cart" element={<Cart />} />
 
           {/* Login required for below routes */}
@@ -49,14 +51,12 @@ function App() {
             <Route path="orders/:orderId" element={<OrderDetails />} />
             <Route path="profile" element={<Profile />} />
           </Route>
-          
         </Route>
 
         {/* admin role required for below routes */}
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route element={<RequireAuth adminRoute={true} />}>
-
             <Route path="dashboard">
               <Route path="insights" element={<AdminDashboard />} />
 
@@ -84,9 +84,7 @@ function App() {
             <Route path="utilities">
               <Route path="generateCoupon" element={<GenerateCoupon />} />
             </Route>
-
           </Route>
-
         </Route>
       </Routes>
     </Suspense>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import OrderItem from "../components/OrderItem.jsx";
-import Filters from '../components/Filters.jsx'
+// import Filters from '../components/Filters.jsx'
+import OrderFilter from "../components/OrderFilter.jsx";
 const orders = [
   {
     id: 1,
@@ -65,7 +66,8 @@ function Orders() {
   return (
     <div className="w-full h-section flex gap-5 sm:flex-row flex-col">
       <aside className=" border sm:w-[25%] w-full sticky top-0 shadow rounded">
-        <Filters type='order' onOrderFilterChange={setOrderFilter}/>
+        {/* <Filters type='order' onOrderFilterChange={setOrderFilter}/> */}
+        <OrderFilter onOrderFilterChange={setOrderFilter} />
       </aside>
       <div className="sm:w-4/5 w-full flex flex-col gap-3">
         <h2 className="text-3xl p-2">Orders</h2>

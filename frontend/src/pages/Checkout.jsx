@@ -123,14 +123,13 @@ function Checkout() {
 
   return (
     <div className="flex sm:flex-row flex-col-reverse w-full gap-3">
-      <div className="p-2.5 border sm:w-[60%] w-full rounded-md shadow-md">
-        <button className="p-0.5 text-lg public-site-btn rounded-full">
-          <Link to="/cart">
-            <BiArrowBack />
-          </Link>
-        </button>
+      <div className="p-4 border sm:w-[60%] w-full rounded-md shadow-md">
+        <Link to="/cart">
+          <BiArrowBack />
+        </Link>
+        {/* <button className="p-0.5 text-lg public-site-btn rounded-full"></button> */}
 
-        <form className="flex flex-col sm:w-[85%] p-2 gap-3">
+        <form className="mt-1.5 flex flex-col sm:w-[85%] gap-3">
           <h2 className="text-2xl sm:text-3xl mb-3">Shipping Details</h2>
 
           <input
@@ -213,7 +212,9 @@ function Checkout() {
         </div>
 
         <div className="flex flex-col gap-2.5 p-4 border mt-5 rounded-md shadow-md">
-        <h2 className="text-xl sm:text-2xl mb-2 font-medium text-black text-opacity-80">Price Details</h2>
+          <h2 className="text-xl sm:text-2xl mb-2 font-medium text-black text-opacity-80">
+            Price Details
+          </h2>
           <PriceDetails
             subTotal={subTotal}
             tax={tax}
@@ -231,7 +232,9 @@ export function CheckoutItem({ item }) {
   const { name, price, quantity, id, image } = item;
   return (
     <li className="flex justify-center items-end gap-3 py-2 px-4 border-b last-of-type:border-b-0 text-sm">
-      <Link to={`/product/${item._id}`}><img src={image} alt="" className="object-contain rounded w-12 h-12" /></Link>
+      <Link to={`/product/${item._id}`}>
+        <img src={image} alt="" className="object-contain rounded w-12 h-12" />
+      </Link>
       <article>
         <p className="text-base">{name}</p>
         <span className="">Qty: {quantity}</span>

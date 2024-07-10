@@ -2,8 +2,8 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.middleware.js'
-// import { signUp, login, logout, refreshAccessToken } from './controllers/user.controller.js';
-import userRouter from './routes/user.route.js';
+import userRouter from './routes/user.routes.js';
+import productRouter from './routes/product.routes.js';
 
 const app = express();
 
@@ -15,12 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true, limit: '100kb'}));
 app.use(cookieParser());
 
-// app.post('/api/v1/users/signUp', signUp);
-// app.post('/api/v1/users/login', login);
-// app.post('/api/v1/users/logout', logout);
-// app.get('/api/v1/users/refresh-accessToken', refreshAccessToken);
-
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/products', productRouter);
 
 app.use(errorHandler);
 

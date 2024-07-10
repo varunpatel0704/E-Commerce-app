@@ -3,7 +3,7 @@ import { HiPlus } from "react-icons/hi";
 function ProductCard({ product }) {
   product.name = "akdfakjdkfjalkdgjlakkjdgkalkdgajdjgal";
   return (
-    <Link to={`/product/${product.id}`}>
+    <Link to={`/products/${product.id}`}>
       <div className="product-card flex flex-col justify-around items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg">
         <img
           className="object-contain w-24 h-24"
@@ -23,7 +23,7 @@ function ProductCard({ product }) {
           className="rounded-full public-site-btn text-white p-2 mb-1.5 flex items-center justify-center gap-1.5 w-20"
           onClick={(e) => {
             e.stopPropagation();
-            e.preventDefault();
+            e.preventDefault(); // to prevent link from activating
             console.log("add to cart");
           }}
         >

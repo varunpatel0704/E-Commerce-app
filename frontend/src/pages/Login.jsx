@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../features/auth/authApiSlice.js";
 import { loggedIn, loggedOut } from "../features/auth/authSlice.js";
-import { useDispatch } from "react-redux";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState(null);
+  
   const navigate = useNavigate();
-  // useEffect(()=>{
-  //   setErr(null);
-  // }, [email, password])
+  const location = useLocation();  
+  const prevLocation = location.state?.from?.pathname;
 
   const dispatch = useDispatch();
   const [login, {}] = useLoginMutation();
@@ -22,24 +23,33 @@ function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      // console.log('login request result: ',res);
+      console.log('login request result: ',res);
       if (res?.data) {
-        const { accessToken, role } = res.data;
-        dispatch(loggedIn(email, role, accessToken)); //don't need to wrap data in object as payload creator will handle it
+        const {fullName, accessToken, role } = res.data;
+        dispatch(loggedIn(fullName, email, role, accessToken)); //don't need to wrap data in object as payload creator will handle it
         console.log("logged in");
+        toast.success(`Welcome back, ${fullName}`);
+
         setEmail("");
         setPassword("");
-        navigate('/');
+        navigate(prevLocation || '/');
       }
     } catch (error) {
       dispatch(loggedOut());
 
-      if (!error?.data) console.log("no response from server");
-      else if (error.status === 401 || error.status === 404)
-        console.log("invalid email/password");
-      else console.log("login failed: ", error);
-
-      setErr(error);
+      if (!error?.data){
+        setErr("No response from server");        
+      } 
+      else if (error.status === 401){
+        setErr("Invalid password");        
+      }
+      else if(error.status === 404){
+        setErr('Invalid email');
+      }
+      else{
+        setErr('Internal server error, try again later.');
+      } 
+      console.log(error);
     }
   };
 
@@ -84,8 +94,8 @@ function Login() {
             }}
             required
           />
-          {err?.status === 401 && (
-            <p className="text-red-500">Invalid credentials</p>
+          {err && (
+            <p className="text-red-500">{err}</p>
           )}
           <button
             // disabled={disabled}
@@ -98,7 +108,7 @@ function Login() {
           <p className="text-sm ">
             Don't have an account?{" "}
             <span className="text-blue-500">
-              <Link to="/register">Sign Up</Link>
+              <Link to="/register" state={{from:location.state?.from}}>Sign Up</Link>
             </span>{" "}
           </p>
         </form>

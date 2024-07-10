@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'product price is required']
   },
-  
+  tags:[{type:String}], //eg: latest, trending, etc.
   discount: Number
 }, {timestamps : true});
 

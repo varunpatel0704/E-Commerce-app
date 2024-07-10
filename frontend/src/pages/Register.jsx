@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "../features/auth/authApiSlice.js";
-import { useDispatch, useSelector } from "react-redux";
 import { loggedIn } from "../features/auth/authSlice.js";
+import toast from "react-hot-toast";
 
-// todo: logout on login fail, refactor usestate.
+
 function Register() {
   // const [fullName, setFullName] = useState("");
   // const [email, setEmail] = useState("");
@@ -21,6 +22,8 @@ function Register() {
     err: null,
   });
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevLocation = location.state?.from?.pathname;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,9 +58,10 @@ function Register() {
       if (res?.data) {
 
         const { accessToken, role } = res.data;
-        dispatch(loggedIn(formData.email, role, accessToken));
+        dispatch(loggedIn(formData.fullName, formData.email, role, accessToken));
         console.log("signed up ", res);
-        
+        toast.success(`Welcome ${formData.fullName}`);
+
         setFormData({
           fullName: "",
           email: "",
@@ -67,7 +71,7 @@ function Register() {
           err: null,
         });
 
-        navigate('/')
+        navigate(prevLocation || '/');
       }
     } catch (error) {
 

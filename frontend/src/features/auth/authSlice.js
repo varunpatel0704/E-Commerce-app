@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
+  fullName: null,
   id: null, 
   role: null,
   accessToken: null
@@ -20,18 +21,20 @@ const authSlice = createSlice({
     //alternate way
     loggedIn:{
       reducer(state, action){
-        const { id, role, accessToken } = action.payload;
+        const { fullName, id, role, accessToken } = action.payload;
         state.id = id;
         state.role = role
         state.accessToken = accessToken;
+        state.fullName = fullName;
       },
       
-      prepare(id, role, accessToken){ // creates the payload object for us. we simply need to pass the required values in the action creator instead of the entire object.
+      prepare(fullName, id, role, accessToken){ // creates the payload object for us. we simply need to pass the required values in the action creator instead of the entire object.
         return {
           payload:{
             id,
             role,
-            accessToken
+            accessToken,
+            fullName
           }
         }
       }
