@@ -1,8 +1,8 @@
+import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.class.js";
 import ApiResponse from "../utils/ApiResponse.class.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import jwt from "jsonwebtoken";
 
 const cookieOptions = {
   httpOnly: true,
@@ -11,18 +11,20 @@ const cookieOptions = {
 
 const signUp = asyncHandler(async function (req, res, next) {
   // get user credentials from request body
-  const { email, password } = req.body;
+  const { fullName, email, password } = req.body;
+  console.log('sign up request received ', email);
 
   // make sure required details are provided in the request
-  if (!email || !password)
+  if (!fullName || !email || !password)
     return next(new ApiError(400, "All fields are mandatory"));
 
   // throw error if user has already signed up
-  const existingUser = await User.exists({ email });
-  if (existingUser) next(new ApiError(400, "User already exists"));
+  const existingUser = await User.findOne({ email });
+  if (existingUser) next(new ApiError(409, "User already exists"));
 
   //register the user and return refresh, access tokens
   const newUser = await User.create({
+    fullName,
     email,
     password,
   });
@@ -32,30 +34,34 @@ const signUp = asyncHandler(async function (req, res, next) {
 
   newUser.refreshToken = refreshToken;
 
-  await newUser.save();
+  const savedUser = await newUser.save();
 
   return res
     .status(201)
     .cookie("refreshToken", refreshToken, cookieOptions)
     .cookie("accessToken", accessToken, cookieOptions)
-    .json(new ApiResponse(201, "Sign up successful", {role:savedUser.role, accessToken}));
+    .json(
+      new ApiResponse(201, "Sign up successful", {
+        role: savedUser.role,
+        accessToken,
+      })
+    );
 });
 
 const login = asyncHandler(async function (req, res, next) {
   // get user credentials
-  const { email, phoneNumber, password } = req.body;
-  if ((!email && !phoneNumber) || !password)
-    // either email or phone number has to be provided, along with the password ofc
+  const { email, password } = req.body;
+  console.log('login request received ', email);
+
+  if(!email || !password)
     return next(new ApiError(400, "All fields are mandatory"));
 
-  // fetch user
-  const existingUser = await User.findOne({
-    $or: [{ email }, { phoneNumber }],
-  });
+  const existingUser = await User.findOne({email}); // use findOne instead of find since find will return an array.
+  console.log(existingUser);
   if (!existingUser) return next(new ApiError(404, "User not found"));
 
   // validate password
-  const isPassValid = await existingUser.validatePassword(password);
+  const isPassValid = await existingUser.validatePassword(password);  
   if (!isPassValid) return next(new ApiError(401, "Invalid password"));
 
   // issue jwt tokens
@@ -71,25 +77,39 @@ const login = asyncHandler(async function (req, res, next) {
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponse(200, "Logged In", {role:savedUser.role, accessToken}));
+    .json(
+      new ApiResponse(200, "Logged In", {fullName:savedUser.fullName, role: savedUser.role, accessToken })
+    );
 });
 
 const logout = asyncHandler(async function (req, res, next) {
-  // user already authenticated, we have access to the _id
+  // clear the tokens from cookies and from the db as well.
+  const refreshToken = req.cookies?.refreshToken;
 
-  // const user = await User.findById(req._id);
-  // user.refreshToken = "";
+  if (!refreshToken) return res.sendStatus(204);
 
-  // await user.save();
-
-  //alternate way
-  await User.findByIdAndUpdate(req._id, { $set: { refreshToken: "" } });
-
-  return res
-    .status(200)
-    .clearCookie("accessToken", cookieOptions)
-    .clearCookie("refreshToken", cookieOptions)
-    .json(new ApiResponse(200, "Logged Out"));
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (decoded) {
+        await User.findOneAndUpdate(
+          { email: decoded.email },
+          { $set: { refreshToken: "" } }
+        ); // we've put an index on the email field so this should be faster.
+      } else if (err) {
+        await User.findOneAndUpdate(
+          { refreshToken },
+          { $set: { refreshToken: "" } }
+        );
+      }
+      return res
+        .status(200)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
+        .json(new ApiResponse(200, "Logged Out"));
+    }
+  );
 });
 
 const refreshAccessToken = asyncHandler(async function (req, res, next) {
@@ -102,7 +122,7 @@ const refreshAccessToken = asyncHandler(async function (req, res, next) {
     process.env.REFRESH_TOKEN_SECRET
   );
 
-  const user = await User.findById(decodedToken._id);
+  const user = await User.find({email: decodedToken.email});
   if (incomingRefToken !== user.refreshToken)
     return next(new ApiError(401, "invalid refreshToken"));
 
@@ -115,4 +135,5 @@ const refreshAccessToken = asyncHandler(async function (req, res, next) {
     .json(new ApiResponse(201, "accessToken refreshed", accessToken));
 });
 
-export { signUp, login, logout, refreshAccessToken };
+export { login, logout, refreshAccessToken, signUp };
+

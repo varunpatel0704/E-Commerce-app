@@ -31,8 +31,9 @@ const productSchema = new mongoose.Schema({
   price:{
     type: Number,
     required: [true, 'product price is required']
-  }
-
+  },
+  
+  discount: Number
 }, {timestamps : true});
 
 const Product = mongoose.model('Product', productSchema);

@@ -13,7 +13,7 @@ const requireAuth = asyncHandler(async function (req, res, next) {
   // now decode the token to get user id payload encoded while signing it
   const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
-  req._id = decodedToken._id;
+  req.user = decodedToken; // user field contains _id, email and role.
   return next();
 });
 
