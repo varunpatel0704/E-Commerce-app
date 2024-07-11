@@ -135,5 +135,48 @@ const refreshAccessToken = asyncHandler(async function (req, res, next) {
     .json(new ApiResponse(201, "accessToken refreshed", accessToken));
 });
 
-export { login, logout, refreshAccessToken, signUp };
+const getAllUsers = asyncHandler(async function (req, res, next){
+  // simply return all the users.
+  const users = await User.find({}).select('-password -refreshToken');
+  
+  if(!users.length) return next(new ApiResponse(404, 'No users found'));
+
+  return res.status(200).json(new ApiResponse(200, 'Fetched users list', users));
+
+});
+
+const getUser = asyncHandler(async function(req, res, next){
+  const {id} = req.params;
+  const emailRegex=/^\S+@\S+\.\S+$/;  // checks if string is of format 'example@provider.domain'
+  const isEmail = emailRegex.test(id);
+
+  let user;
+  if(isEmail)
+    user = await User.findOne({email: id}).select('-password -refreshToken');
+  else  
+    user = await User.findById(id).select('-password -refreshToken');
+
+  if(!user) return next(new ApiError(404, 'User not found'));
+
+  return res.status(200).json(new ApiResponse(200, 'User fetched', user));
+
+});
+
+const deleteUser = asyncHandler(async function(req, res, next){
+  const {id} = req.params;
+  const emailRegex=/^\S+@\S+\.\S+$/;  // checks if string is of format 'example@provider.domain'
+  const isEmail = emailRegex.test(id);
+
+  let user;
+  if(isEmail)
+    user = await User.findOneAndDelete({email: id}).select('-password -refreshToken');
+  else  
+    user = await User.findOneAndDelete({_id: id}).select('-password -refreshToken');
+
+  if(!user) return next(new ApiError(404, 'User not found'));
+
+  return res.status(200).json(new ApiResponse(200, 'User deleted', user));
+});
+
+export { login, logout, refreshAccessToken, signUp, getAllUsers, getUser, deleteUser };
 
