@@ -1,0 +1,76 @@
+{
+  "product": [
+    {
+      "name": "Laptop Backpack",
+      "category": "electronics",
+      "price": 109.95,
+      "description": "A cool laptop backpack",
+      "image": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+      "discount": 3.9,
+      "stock": 56
+    },
+    {
+      "name": "Casual T-Shirt for Men",
+      "category": "fashion",
+      "price": 22.3,
+      "description": "Slim-fitting style, t-shoty for men",
+      "image": "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
+      "discount": 4.1,
+      "stock": 56
+    },
+    {
+      "name": "Mens Cotton Jacket",
+      "category": "fashion",
+      "price": 55.99,
+      "description": "Great outerwear jackets for spring, autumn, or winter.",
+      "image": "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg",
+      "discount": 4.7,
+      "stock": 56
+    },
+    {
+      "name": "Mens Casual Slim Fit",
+      "category": "shirts",
+      "price": 15.99,
+      "description": "An aweome shirt for men",
+      "image": "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg",
+      "discount": 70,
+      "stock": 56
+    },
+    {
+      "name": "Women's Gold & Silver Bracelet",
+      "category": "jewllery",
+      "price": 695,
+      "description": "A very cool bracelet.",
+      "image": "https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg",
+      "discount": 400,
+      "stock": 56
+    },
+    {
+      "name": "Solid Gold Petite Micropave",
+      "category": "jewllery",
+      "price": 168,
+      "description": "A very cool jewlery for women",
+      "image": "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "discount": 3.9,
+      "stock": 56
+    },
+    {
+      "name": "White Gold Plated Princess",
+      "category": "electronics",
+      "price": 9.99,
+      "description": "A great diamond engagement ring for her.",
+      "image": "https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_.jpg",
+      "discount": 3,
+      "stock": 56
+    },
+    {
+      "name": "Gold-plated Earrings",
+      "category": "electronics",
+      "price": 10.99,
+      "description": "Rose Gold Plated Double Flared Tunnel Plug Earrings.",
+      "image": "https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_.jpg",
+      "discount": 1.9,
+      "stock": 56
+    }
+  ]
+}

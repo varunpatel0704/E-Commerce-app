@@ -28,7 +28,7 @@ const signUp = asyncHandler(async function (req, res, next) {
     email,
     password,
   });
-
+  // refactor and try to use new User() instead.
   const accessToken = newUser.generateAccessToken();
   const refreshToken = newUser.generateRefreshToken();
 
@@ -146,7 +146,7 @@ const getAllUsers = asyncHandler(async function (req, res, next){
 });
 
 const getUser = asyncHandler(async function(req, res, next){
-  const {id} = req.params;
+  const {id} = req.params || req.body;
   const emailRegex=/^\S+@\S+\.\S+$/;  // checks if string is of format 'example@provider.domain'
   const isEmail = emailRegex.test(id);
 
@@ -163,7 +163,7 @@ const getUser = asyncHandler(async function(req, res, next){
 });
 
 const deleteUser = asyncHandler(async function(req, res, next){
-  const {id} = req.params;
+  const {id} = req.params || req.body;
   const emailRegex=/^\S+@\S+\.\S+$/;  // checks if string is of format 'example@provider.domain'
   const isEmail = emailRegex.test(id);
 

@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
-  name: {
+  category: {
     type: String,
-    required: [true, 'category name is required']
+    default: 'miscellaneous'
+    // required: [true, 'category name is required']
   },
   
   products:[

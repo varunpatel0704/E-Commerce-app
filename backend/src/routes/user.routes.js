@@ -19,6 +19,7 @@ userRouter.route("/refresh-accessToken").get(refreshAccessToken);
 userRouter.route("/all").get(getAllUsers);
 userRouter.route("/:id")
 .get(getUser)
+.patch()
 .delete(deleteUser);
 
 export default userRouter;

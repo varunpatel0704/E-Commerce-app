@@ -7,15 +7,13 @@ const productSchema = new mongoose.Schema(
       required: [true, "product name is required"],
     },
 
-    category: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
-        // required: [true, 'product category is required']
-      },
-    ],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: [true, 'product category is required']
+    },
 
-    discription: {
+    description: {
       type: String,
       default: "No discription provided",
       // required: [true, 'product discription is required']
