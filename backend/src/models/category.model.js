@@ -3,10 +3,14 @@ import mongoose from 'mongoose';
 const categorySchema = new mongoose.Schema({
   category: {
     type: String,
-    default: 'miscellaneous'
+    default: 'miscellaneous',
+    lowercase: true
     // required: [true, 'category name is required']
   },
-  
+  image: {
+    type: String,
+    required: [true, 'category image is required']
+  },
   products:[
     {
       type: mongoose.Schema.Types.ObjectId,

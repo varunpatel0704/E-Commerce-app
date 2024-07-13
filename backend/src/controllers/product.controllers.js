@@ -14,9 +14,18 @@ const getCategories = asyncHandler(async function (req, res, next) {
     .json(new ApiResponse(200, "Fetched requested categories", categories));
 });
 
+const getAllProducts = asyncHandler(async function(req, res, next){
+  const allProducts = await Product.find({});
+  if(!allProducts.length) return next(new ApiError(404, 'No products found'));
+
+  return res.status(200).json(new ApiResponse(200, 'Fetched all products', allProducts));
+});
+
 const getProducts = asyncHandler(async function (req, res, next) {
   // try to fetch categories first and then products under that category.
-  const { category } = req.params || req.body;
+  let { category } = req.params || req.body;
+  category = category.toLowerCase();
+
   // utilizing this method coz the (no of categories) << (no of products) and we are already storing products category wise. Hence it makes more sense to fetch then category wise which saves time as well
   const result = await Category.findOne({ category }).populate("products");
   if(!result) return next(new ApiError(404, 'category not found'));
@@ -31,7 +40,7 @@ const getProducts = asyncHandler(async function (req, res, next) {
 
 const getProduct = asyncHandler(async function (req, res, next) {
   const { productId } = req.params || req.body;
-  const product = await Product.findById(productId);
+  const product = await Product.findById(productId).populate('category', 'category');
 
   if (!product) return next(new ApiError(404, "Product not found"));
 
@@ -42,10 +51,14 @@ const getProduct = asyncHandler(async function (req, res, next) {
 
 const addProduct = asyncHandler(async function(req, res, next){
   // get the details from req.body.
-  const {name, category, description, price, discount, stock, image} = req.body;
-  const existingProduct = await Product.findOne({$or: [{name}, {description}]});
+  let {name, category, description, price, discount, stock, image} = req.body;
+  category = category.toLowerCase();
   
-  if(existingProduct) return next(new ApiError(409, 'Product already exists'));
+  const existingProduct = await Product.findOne({$or: [{name}, {description}]}).populate('category');
+
+  if(existingProduct && (existingProduct.category.category === category)) {
+    return next(new ApiError(409, 'Product already exists'));
+  }
   
   const newProduct = new Product({
     name,
@@ -66,6 +79,7 @@ const addProduct = asyncHandler(async function(req, res, next){
   else{
     const newCategory = new Category({
       category,
+      image,
       products: [newProduct._id],
     })
     await newCategory.save();
@@ -99,20 +113,21 @@ const addProduct = asyncHandler(async function(req, res, next){
 const updateProduct = asyncHandler(async function(req, res, next){
   const {productId} = req.params;
   const product = req.body;
-  console.log('received product ', product);
+  product.category = product.category.toLowerCase();
+  // console.log('received product ', product);
   
   if(!product.category)
     product.category = 'miscellaneous';
 
   const oldProduct = await Product.findById(productId);
   if(!oldProduct) return next(new ApiError(404, 'Product not found'));
-  console.log('old product ', oldProduct);
+  // console.log('old product ', oldProduct);
 
   // todo: find category by name instead of id since this is creating duplicate docs.
   const oldCategory = await Category.findById(oldProduct.category);                             
   
   let newCategory = product.category;
-  console.log('oldCategory: ', oldCategory)
+  // console.log('oldCategory: ', oldCategory)
   
   // comparing cateogry names
   if(oldCategory.category !== newCategory){
@@ -130,7 +145,7 @@ const updateProduct = asyncHandler(async function(req, res, next){
         oldCategory.products[i] = null;        
     }
     await oldCategory.save();
-    console.log('oldcategory after save: ', oldCategory)
+    // console.log('oldcategory after save: ', oldCategory)
   
     // now check if the new category already exists in db.
     newCategory = await Category.findOne({category: newCategory});
@@ -141,10 +156,11 @@ const updateProduct = asyncHandler(async function(req, res, next){
     else{
       newCategory = new Category({
         category: product.category,
+        image: product.image,
         products: [productId]
       })      
     }
-    console.log('new cateogry: ', newCategory);
+    // console.log('new cateogry: ', newCategory);
     await newCategory.save();    
     product.category = newCategory._id;
   }
@@ -176,4 +192,4 @@ const deleteProduct = asyncHandler(async function(req, res, next){
   return res.status(200).json(new ApiResponse(200, 'Product deleted'));
 });
 
-export { getCategories, getProducts, getProduct, addProduct, updateProduct, deleteProduct };
+export { getCategories, getAllProducts, getProducts, getProduct, addProduct, updateProduct, deleteProduct };

@@ -117,12 +117,16 @@ const refreshAccessToken = asyncHandler(async function (req, res, next) {
   const incomingRefToken = req.cookies?.refreshToken;
   if (!incomingRefToken) return next(new ApiError(401, "refreshToken missing"));
 
+  console.log('incoming refreshToken: ', incomingRefToken);
+  
   const decodedToken = jwt.verify(
     incomingRefToken,
     process.env.REFRESH_TOKEN_SECRET
   );
 
-  const user = await User.find({email: decodedToken.email});
+  const user = await User.findOne({email: decodedToken.email});
+
+  console.log('user db ref token: ', user);
   if (incomingRefToken !== user.refreshToken)
     return next(new ApiError(401, "invalid refreshToken"));
 
