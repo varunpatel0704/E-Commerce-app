@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import asyncHandler from "../utils/asyncHandler.js";
 // import ApiError from "../utils/ApiError.class.js";
-import { rmSync } from "fs";
+import { rm } from "fs/promises";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,12 +26,12 @@ const cloudinaryUpload = async (filePath) => {
     const result = await cloudinary.uploader.upload(filePath, options);    
     console.log(result);
     // remove file from the server after it is uploaded to cloud
-    rmSync(filePath);
+    rm(filePath);
 
     return result;
     
   } catch (error) {
-    rmSync(filePath);
+    rm(filePath);
 
     return error;
   }

@@ -136,7 +136,7 @@ const refreshAccessToken = asyncHandler(async function (req, res, next) {
   return res
     .status(201)
     .cookie("accessToken", accessToken, cookieOptions)
-    .json(new ApiResponse(201, "accessToken refreshed", accessToken));
+    .json(new ApiResponse(201, "accessToken refreshed", {accessToken, fullName: user.fullName, email: user.email, role: user.role}));
 });
 
 const getAllUsers = asyncHandler(async function (req, res, next){
