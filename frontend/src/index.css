@@ -391,4 +391,26 @@
     background-color: rgb(23, 127, 255);
     color: white;
   }
+
+  .delete-product-btn{
+    position: absolute;
+    right: 3rem;
+    top: 1.5rem;
+
+    button {
+      &:hover {
+        opacity: 0.75;
+      }
+      /* width: 3rem; */
+      text-decoration: none;
+      font-size: large;
+      padding: 0.8rem;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgb(255, 44, 44, 0.15);
+      color: rgb(255, 44, 44);
+    }
+  }
 }

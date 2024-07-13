@@ -4,10 +4,10 @@ import { usePagination, useSortBy, useTable } from "react-table";
 import { BsSearch } from "react-icons/bs";
 
 function TableHOC({
-  columns,
+  columns=[],
   containerClassName = "",
-  data,
-  heading,
+  data=[],
+  heading='',
   pageSize = 4,
   showPagination = false,
   showSearch = false,

@@ -1,35 +1,87 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import Loader from "./components/Loader.jsx";
+import RequireAuth from "./features/auth/RequireAuth.jsx";
+import { usePersistentLoginMutation, usePersistentLoginQuery } from "./features/auth/authApiSlice.js";
+import { loggedIn } from "./features/auth/authSlice.js";
+import AdminLayout from "./layouts/AdminLayout.jsx";
 import Layout from "./layouts/Layout.jsx";
 import Checkout from "./pages/Checkout.jsx"; //implement lazy
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import ProductSearch from "./pages/ProductSearch.jsx";
-import Orders from "./pages/Orders.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
+import Orders from "./pages/Orders.jsx";
+import ProductDetails from "./pages/ProductDetails.jsx";
+import ProductSearch from "./pages/ProductSearch.jsx";
+import Register from "./pages/Register.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import AdminLayout from "./layouts/AdminLayout.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
-import AdminOrders from "./pages/admin/AdminOrders.jsx";
-import NewProductForm from "./pages/admin/NewProductForm.jsx";
-import EditProductForm from "./pages/admin/EditProductForm.jsx";
-import ManageOrder from "./pages/admin/ManageOrder.jsx";
-import ProductDetails from "./pages/ProductDetails.jsx";
 import BarCharts from "./pages/admin/BarCharts.jsx";
-import PieCharts from "./pages/admin/PieCharts.jsx";
-import LineCharts from "./pages/admin/LineCharts.jsx";
+import EditProductForm from "./pages/admin/EditProductForm.jsx";
 import GenerateCoupon from "./pages/admin/GenerateCoupon.jsx";
-import RequireAuth from "./features/auth/RequireAuth.jsx";
-import Products from "./pages/Products.jsx";
+import LineCharts from "./pages/admin/LineCharts.jsx";
+import ManageOrder from "./pages/admin/ManageOrder.jsx";
+import NewProductForm from "./pages/admin/NewProductForm.jsx";
+import PieCharts from "./pages/admin/PieCharts.jsx";
 // import ProductForm from "./components/ProductForm.jsx";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const Cart = lazy(() => import("./pages/Cart.jsx"));
 
 function App() {
+  // implement persistent login. when the app component mounts, send a req to the server to verify the accessToken and automatically login if verified. 
+  const dispatch = useDispatch();
+  const [persistentLogin] = usePersistentLoginMutation();
+  // const {data} = usePersistentLoginQuery();
+
+
+  useEffect(()=>{
+    (
+      async function(){
+        try {
+          const res = await persistentLogin().unwrap();
+          if(res.data){
+            const {fullName, email, role, accessToken} = res.data;
+            dispatch(loggedIn(fullName, email, role, accessToken));
+            toast.success(`Welcome back, ${fullName}`);
+          }
+        } catch (error) {
+          
+        }
+      }
+    )()
+  },[]);
+
+  // useEffect(()=>{
+  //   if(data){
+  //     const {fullName, email, role, accessToken} = data.data;
+  //     dispatch(loggedIn(fullName, email, role, accessToken));
+  //     toast.success(`Welcome back, ${fullName}`);
+  //   }
+  // }, [data]);
+
+  // useEffect(()=>{    
+  //   (
+  //     async function(){
+  //       try {
+  //         const res = await fetch('http://localhost:8000/api/v1/users/refresh-accessToken', {credentials: 'include', method: 'GET', mode: 'cors'});
+  //         // console.log(res);
+  //         const data = await res.json();
+  //         const {fullName, email, role, accessToken} = data.data;
+  //         // console.log(fullName, email, role, accessToken);
+  //         dispatch(loggedIn(fullName, email, role, accessToken));
+  //         toast.success(`Welcome back, ${fullName}`);
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     }
+  //   )();
+  // }, []);
+
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
@@ -90,6 +142,7 @@ function App() {
     </Suspense>
   );
 }
+
 
 export default App;
 

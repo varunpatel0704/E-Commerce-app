@@ -100,7 +100,7 @@ function AdminUsers() {
 
   return (
     <main className="bg-white p-5 pl-7 border shadow-md rounded w-full min-h-[98vh] relative">
-      {UsersTable()}
+      {<UsersTable/>}
     </main>
   );
 }

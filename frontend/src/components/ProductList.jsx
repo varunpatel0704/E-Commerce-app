@@ -1,22 +1,16 @@
 import ProductCard from "./ProductCard.jsx";
+import { useGetProductsQuery } from "../features/products/productApiSlice.js";
 
-function ProductList() {
+function ProductList({ category }) {
   // Todo: fetch a list of products
-  const products = [
-    { id: 1, name: "camera", image: "abcd", price: "1200" },
-    { id: 1, name: "camera", image: "abcd", price: "1200" },
-    { id: 1, name: "camera", image: "abcd", price: "1200" },
-    { id: 1, name: "camera", image: "abcd", price: "1200" },
-    { id: 1, name: "camera", image: "abcd", price: "1200" },
-  ];
+  const { data, isLoading, isFetching, isError, error } =
+    useGetProductsQuery(category);
+  const products = data?.data || [];
+  console.log(`products under ${category} `, products);
   const productList = products.map((product) => (
-    <ProductCard key={product.id} product={product} />
+    <ProductCard key={product._id} product={product} />
   ));
-  return (
-    <div className="flex justify-start items-center flex-wrap gap-10">
-      {productList}
-    </div>
-  );
+  return isError ? error.data.messae : productList;
 }
 
 export default ProductList;
