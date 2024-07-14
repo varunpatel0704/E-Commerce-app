@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
   
   filename: function(req, file, cb){  
     const randomSuffix = uuidv4();
-    const extension = file.originalname.split('.').pop();
+    const extension = file?.originalname.split('.').pop();
 
     cb(null, `${randomSuffix}.${extension}`);
   }

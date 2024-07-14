@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Loader from "./components/Loader.jsx";
 import RequireAuth from "./features/auth/RequireAuth.jsx";
 import { usePersistentLoginMutation, usePersistentLoginQuery } from "./features/auth/authApiSlice.js";
@@ -27,17 +27,18 @@ import LineCharts from "./pages/admin/LineCharts.jsx";
 import ManageOrder from "./pages/admin/ManageOrder.jsx";
 import NewProductForm from "./pages/admin/NewProductForm.jsx";
 import PieCharts from "./pages/admin/PieCharts.jsx";
+import CreateUserForm from "./pages/admin/CreateUser.jsx";
 // import ProductForm from "./components/ProductForm.jsx";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const Cart = lazy(() => import("./pages/Cart.jsx"));
 
 function App() {
+  const navigate = useNavigate();
   // implement persistent login. when the app component mounts, send a req to the server to verify the accessToken and automatically login if verified. 
   const dispatch = useDispatch();
   const [persistentLogin] = usePersistentLoginMutation();
   // const {data} = usePersistentLoginQuery();
-
 
   useEffect(()=>{
     (
@@ -48,6 +49,7 @@ function App() {
             const {fullName, email, role, accessToken} = res.data;
             dispatch(loggedIn(fullName, email, role, accessToken));
             toast.success(`Welcome back, ${fullName}`);
+            navigate('/')
           }
         } catch (error) {
           
@@ -116,10 +118,13 @@ function App() {
                 <Route index element={<AdminProducts />} />
                 <Route path="new" element={<NewProductForm />} />
                 <Route path="edit/:id" element={<EditProductForm />} />
-                {/* <Route path="new" element={<ProductForm/>} /> */}
+                
               </Route>
 
-              <Route path="users" element={<AdminUsers />} />
+              <Route path="users">
+                <Route index element={<AdminUsers />} />
+                <Route path="create" element={<CreateUserForm/>} />
+              </Route>
 
               <Route path="orders">
                 <Route index element={<AdminOrders />} />

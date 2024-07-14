@@ -19,10 +19,6 @@ const addressSchema = new mongoose.Schema({
     type: Number,
     required: [true, "pincode is required"],
   },
-  country: {
-    type: String,
-    required: [true, "country is required"],
-  },
 });
 
 const userSchema = new mongoose.Schema(
@@ -65,7 +61,10 @@ const userSchema = new mongoose.Schema(
         // required: true,
       },
     ],
-
+    gender: {
+      type: String,
+      default: 'Not provided'
+    },
     avatar: String,
     shippingAddress: addressSchema,
     refreshToken: String,

@@ -1,6 +1,6 @@
 import React from "react";
 import ProductForm from "../../components/ProductForm.jsx";
-import { useAddProductMutation } from "../../features/products/productApiSlice.js";
+import { useAddProductMutation } from "../../features/products/productsApiSlice.js";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 

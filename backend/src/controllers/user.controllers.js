@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.class.js";
 import ApiResponse from "../utils/ApiResponse.class.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { cloudinaryDelete } from "../middlewares/cloudUpload.middleware.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -172,15 +173,65 @@ const deleteUser = asyncHandler(async function(req, res, next){
   const isEmail = emailRegex.test(id);
 
   let user;
+  // if(isEmail)
+  //   user = await User.findOneAndDelete({email: id}).select('-password -refreshToken');
+  // else  
+  //   user = await User.findOneAndDelete({_id: id}).select('-password -refreshToken');
   if(isEmail)
-    user = await User.findOneAndDelete({email: id}).select('-password -refreshToken');
+    user = await User.findOne({email: id});
   else  
-    user = await User.findOneAndDelete({_id: id}).select('-password -refreshToken');
+    user = await User.findOne({_id: id});
 
   if(!user) return next(new ApiError(404, 'User not found'));
+  
+  const imageUrl = user.avatar;
 
-  return res.status(200).json(new ApiResponse(200, 'User deleted', user));
+  const fileName = imageUrl.split('/').pop();
+  const publicId = fileName.slice(0, fileName.indexOf('.'));
+  cloudinaryDelete([publicId]); //delete uploaded image from cloudinary
+
+  await user.deleteOne();
+
+  return res.status(200).json(new ApiResponse(200, 'User deleted'));
 });
 
-export { login, logout, refreshAccessToken, signUp, getAllUsers, getUser, deleteUser };
+const createUser = asyncHandler(async function(req, res, next){
+    // get user credentials from request body
+    const { fullName, email, password, role, phoneNumber, image } = req.body;
+    // console.log(req.body);
+    // make sure required details are provided in the request
+    if (!fullName || !email || !password || !role)
+      return next(new ApiError(400, "All fields are mandatory"));
+  
+    // throw error if user has already signed up
+    const existingUser = await User.findOne({ email });
+    if (existingUser) next(new ApiError(409, "User already exists"));
+  
+    //register the user and return refresh, access tokens
+    const newUser = await User.create({
+      fullName,
+      email,
+      password,
+      role
+    });
+    if(image)
+      newUser.avatar = image;
+    if(phoneNumber)
+      newUser.phoneNumber = phoneNumber;
+    
+  
+    await newUser.save();
+  
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(201, "User added",{fullName, email, role, phoneNumber, image})
+      );
+})
+
+const updateUser = asyncHandler(async function(req, res, next){
+  const user = req.body;
+})
+
+export { login, logout, refreshAccessToken, signUp, createUser, getAllUsers, getUser, deleteUser };
 

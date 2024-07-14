@@ -17,7 +17,7 @@ const productRouter = Router();
 productRouter.route("/categories").get(getCategories); // all categories
 productRouter.route("/categories/:category").get(getProducts); // list of products from specific category
 productRouter.route("/new").post(requireAuth, requireAdmin, multiUpload('image'), cloudUpload, addProduct);
-productRouter.route("/all").get(getAllProducts);
+productRouter.route("/all").get(requireAuth, requireAdmin, getAllProducts);
 
 productRouter
   .route("/:productId")

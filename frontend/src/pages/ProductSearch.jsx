@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard.jsx";
 import ProductFilter from "../components/ProductFilter.jsx";
 import ProductList from "../components/ProductList.jsx";
-import { useGetCategoriesQuery } from "../features/products/productApiSlice.js";
+import { useGetCategoriesQuery } from "../features/products/productsApiSlice.js";
 
 function Categories({ categories }) {
   return (

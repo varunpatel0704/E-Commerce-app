@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.class.js";
 import ApiResponse from "../utils/ApiResponse.class.js";
 import Product from "../models/product.model.js";
 import Category from "../models/category.model.js";
+import { cloudinaryDelete } from "../middlewares/cloudUpload.middleware.js";
 
 const getCategories = asyncHandler(async function (req, res, next) {
   const categories = await Category.find({}).select("-products");
@@ -31,7 +32,15 @@ const getProducts = asyncHandler(async function (req, res, next) {
   if(!result) return next(new ApiError(404, 'category not found'));
   const products = result.products;
 
-  if (!products.length) return next(new ApiError(404, "No products not found"));
+  if (!products.length){
+    const imageUrl = result.image;
+    const fileName = imageUrl.split('/').pop();
+    const publicId = fileName.slice(0, fileName.indexOf('.'));
+    cloudinaryDelete([publicId]); //delete uploaded image from cloudinary    
+
+    await result.deleteOne();
+    return next(new ApiError(404, "No products not found, category removed"));
+  } 
 
   return res
     .status(200)
@@ -178,7 +187,13 @@ const deleteProduct = asyncHandler(async function(req, res, next){
   const {productId} = req.params || req.body;
 
   const product = await Product.findById(productId);
-  
+  if(!product) return next(new ApiError(404, 'product not found'));
+
+  const imageUrl = product.image;
+  const fileName = imageUrl.split('/').pop();
+  const publicId = fileName.slice(0, fileName.indexOf('.'));
+  cloudinaryDelete([publicId]); //delete uploaded image from cloudinary
+
   // first de-list the product from respective category.
   const productCategory = await Category.findById(product.category);
   

@@ -165,7 +165,7 @@ function Checkout() {
             onChange={handleInfoChange}
           />
 
-          <select
+          {/* <select
             className="input-base-style"
             required
             id="country"
@@ -177,7 +177,7 @@ function Checkout() {
             <option value="india">India</option>
             <option value="us">USA</option>
             <option value="uk">UK</option>
-          </select>
+          </select> */}
 
           <input
             className="input-base-style"

@@ -6,7 +6,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  user-select: none;
+  user-select: text;
 }
 @layer utilities {
   .input-base-style {
@@ -288,7 +288,7 @@
     width: 2.5rem;
     height: 2.5rem;
     padding: 0.7rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
     top: 2.25rem;
     right: 2.5rem;
     display: flex;
@@ -412,5 +412,47 @@
       background-color: rgb(255, 44, 44, 0.15);
       color: rgb(255, 44, 44);
     }
+  }
+
+  .profile-form{
+    fieldset.profile-form-fieldset{
+      width: 70%;
+      /* box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); */
+      border: 1px solid rgb(0, 0, 0, 0.1);
+      border-radius: 4px;       
+      padding: 0.1rem;
+      legend{
+        margin: 0 0.5rem;
+        padding: 0 0.3rem;
+        font-size: 0.8rem;
+        color: rgb(0, 0, 0, 0.6);
+        /* font-weight: 500; */
+      }
+      .profile-form-input{
+        overflow: auto;
+        &:disabled{
+          background-color: white;
+          cursor: not-allowed;
+        }
+        &::-webkit-scrollbar{
+          display: none;
+        }
+        outline: none;
+        padding: 0.2rem 1rem 0.58rem 1rem;
+        width: 100%;
+        color: rgba(0, 0, 0, 0.7);        
+      }
+    }    
+
+    button.product-form-btn{
+      /* background-color: rgb(5, 107, 224); */
+      border: 1px solid rgb(0 0 0 / 0.05);
+      /* background-color: rgb(23, 127, 255); */
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      outline: none;
+      padding: .6rem;
+      border-radius: 8px;
+      /* color: white; */
+    } 
   }
 }

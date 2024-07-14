@@ -26,6 +26,7 @@ function Login() {
       console.log('login request result: ',res);
       if (res?.data) {
         const {fullName, accessToken, role } = res.data;
+        dispatch(loggedOut()); // just to make sure existing user(if any) is logged out
         dispatch(loggedIn(fullName, email, role, accessToken)); //don't need to wrap data in object as payload creator will handle it
         console.log("logged in");
         toast.success(`Welcome back, ${fullName}`);

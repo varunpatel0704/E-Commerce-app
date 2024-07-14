@@ -37,11 +37,22 @@ const cloudinaryUpload = async (filePath) => {
   }
 };
 
+export const cloudinaryDelete = async(publicIdArray)=>{
+  try {
+    const res = await cloudinary.api.delete_resources(publicIdArray)
+    return res;
+  } catch (error) { 
+    throw new Error('could not delete asset from cloudinary');
+  }
+}
+
 const cloudUpload = asyncHandler(async function(req, res, next){
   
   //extract the file path provided by multer
   const file = req.files?.[0];
-  const filePath = file?.path;
+  if(!file) return next();
+
+  const filePath = file.path;
 
   console.log('file path: ', filePath);
   // upload and wait for result

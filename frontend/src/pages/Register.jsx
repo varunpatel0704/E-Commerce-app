@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "../features/auth/authApiSlice.js";
-import { loggedIn } from "../features/auth/authSlice.js";
+import { loggedIn, loggedOut } from "../features/auth/authSlice.js";
 import toast from "react-hot-toast";
 
 
@@ -58,6 +58,7 @@ function Register() {
       if (res?.data) {
 
         const { accessToken, role } = res.data;
+        dispatch(loggedOut());
         dispatch(loggedIn(formData.fullName, formData.email, role, accessToken));
         console.log("signed up ", res);
         toast.success(`Welcome ${formData.fullName}`);

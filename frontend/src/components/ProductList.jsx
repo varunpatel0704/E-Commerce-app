@@ -1,5 +1,5 @@
 import ProductCard from "./ProductCard.jsx";
-import { useGetProductsQuery } from "../features/products/productApiSlice.js";
+import { useGetProductsQuery } from "../features/products/productsApiSlice.js";
 
 function ProductList({ category }) {
   // Todo: fetch a list of products
