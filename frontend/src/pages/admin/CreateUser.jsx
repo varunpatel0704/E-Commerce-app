@@ -63,12 +63,17 @@ function CreateUserForm() {
         navigate('/admin/dashboard/users');
       }
     } catch (error) {
-      console.log(error);
-      toast.error('Failed to create user');
+      if(error.status === 409){
+        toast.error('User already exists');
+      }
+      else{
+        toast.error('Failed to create user');
+        console.log(error);        
+      }
     }
   }
   if(isLoading) return <h1>Loading...</h1>;
-  if(isError) return <h1>Error...</h1>;
+  // if(isError) return <h1>Error...</h1>;
 
   return (
     <main className="min-h-[98vh] bg-white p-3 pl-7 border shadow-md rounded w-full relative">

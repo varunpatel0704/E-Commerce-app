@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import PriceDetails from "../components/PriceDetails.jsx";
+import { ShippingInfo } from "./Profile.jsx";
 
 const cartItems = [
   {
@@ -110,15 +111,15 @@ const total = subTotal + tax + shipping - discount;
 
 function Checkout() {
   const [shippingInfo, setShippingInfo] = useState({
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    pincode: "",
+    address: "A6 New Vaibhav apartments",
+    city: "Ahmedabad",
+    state: "Gujarat",
+    pincode: "380006",
   });
 
-  function handleInfoChange(e) {
-    setShippingInfo({ ...shippingInfo, [e.target.name]: [e.target.value] });
+  function handleShippingInfoChange(e) {
+    const {name, value} = e.target;
+    setShippingInfo({ ...shippingInfo, [name]: value });
   }
 
   return (
@@ -131,8 +132,8 @@ function Checkout() {
 
         <form className="mt-1.5 flex flex-col sm:w-[85%] gap-3">
           <h2 className="text-2xl sm:text-3xl mb-3">Shipping Details</h2>
-
-          <input
+          <ShippingInfo className='shipping-info-form' shippingAddress={shippingInfo} onChange={handleShippingInfoChange} />
+          {/* <input
             className="input-base-style"
             required
             id="address"
@@ -163,7 +164,7 @@ function Checkout() {
             placeholder="State"
             value={shippingInfo.state}
             onChange={handleInfoChange}
-          />
+          /> */}
 
           {/* <select
             className="input-base-style"
@@ -179,7 +180,7 @@ function Checkout() {
             <option value="uk">UK</option>
           </select> */}
 
-          <input
+          {/* <input
             className="input-base-style"
             required
             id="pincode"
@@ -189,7 +190,7 @@ function Checkout() {
             placeholder="Pincode"
             value={shippingInfo.pincode}
             onChange={handleInfoChange}
-          />
+          /> */}
 
           <h2 className="text-2xl sm:text-3xl sm:mt-8 mb-3">Payment Details</h2>
 

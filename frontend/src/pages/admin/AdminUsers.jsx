@@ -90,9 +90,9 @@ function AdminUsersWrapper(){
 
   const users = data?.data;
   console.log(users);
-  async function handleDelete(id){
+  async function handleDelete(email){
     try {
-      const res = await deleteUser(id).unwrap();
+      const res = await deleteUser(email).unwrap();
       if(res){
         toast.success('User removed');
       }
@@ -101,13 +101,13 @@ function AdminUsersWrapper(){
     }
   }
 
-  const rows = users?.map(({_id, fullName, email, role, gender, avatar})=>({
+  const rows = users?.map(({ fullName, email, role, gender, avatar})=>({
     avatar: <img src={avatar} alt="Profile" />,
     name: fullName,
     email,
     gender,
     role,
-    action: <Link onClick={()=>handleDelete(_id)} ><BsTrash style={{display: 'inline'}} /></Link>
+    action: <Link onClick={()=>handleDelete(email)} ><BsTrash style={{display: 'inline'}} /></Link>
   }))
 
   if(isLoading || del.isLoading ) return <h1>Loading...</h1>;

@@ -21,10 +21,10 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
 
     updateUser: builder.mutation({
-      query: (id) => ({
-        url: `${baseUrl}/${id}`,
+      query: ({ details, email }) => ({
+        url: `${baseUrl}/${email}`,
         method: "PATCH",
-        body: id,
+        body: details,
       }),
     }),
 
@@ -35,6 +35,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: id,
       }),
     }),
+
+    deleteAccount: builder.mutation({
+      query: (id) => ({
+        url: `${baseUrl}/delete/${id}`,
+        method: "DELETE",
+        body: id,
+      })
+    })
   }),
 });
 
@@ -42,6 +50,7 @@ export const {
   useGetAllUsersQuery,
   useGetUserQuery,
   useCreateUserMutation,
-  useDeleteUserMutation,
   useUpdateUserMutation,
+  useDeleteUserMutation,
+  useDeleteAccountMutation,
 } = usersApiSlice;
