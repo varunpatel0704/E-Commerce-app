@@ -40,7 +40,7 @@ const getProducts = asyncHandler(async function (req, res, next) {
       const fileName = imageUrl.split("/").pop();
       const publicId = fileName.slice(0, fileName.indexOf("."));
       cloudinaryDelete([publicId]);
-    } 
+    }
 
     await result.deleteOne();
     return next(new ApiError(404, "No products not found, category removed"));
@@ -132,36 +132,44 @@ const updateProduct = asyncHandler(async function (req, res, next) {
   const { productId } = req.params;
   const product = req.body;
   product.category = product.category.toLowerCase();
-  // console.log('received product ', product);
+  console.log("received product ", product);
 
   if (!product.category) product.category = "miscellaneous";
 
   const oldProduct = await Product.findById(productId);
   if (!oldProduct) return next(new ApiError(404, "Product not found"));
-  // console.log('old product ', oldProduct);
+  console.log("old product ", oldProduct);
+
+  if (!product.image || product.image === "undefined") {
+    product.image = oldProduct.image;
+  }
 
   // todo: find category by name instead of id since this is creating duplicate docs.
   const oldCategory = await Category.findById(oldProduct.category);
 
   let newCategory = product.category;
-  // console.log('oldCategory: ', oldCategory)
+  console.log("oldCategory: ", oldCategory);
 
   // comparing cateogry names
   if (oldCategory.category !== newCategory) {
     // de-list the product from previous category since a new category has been created
-    // oldCategory.products = oldCategory.products.map(product=>{
-    //   if(product.toString() === productId)
-    //     return null;
+    oldCategory.products = oldCategory.products.filter(
+      (product) => product.toString() !== productId
+    );
 
-    //   else return product;
-    // });
-
-    for (const i in oldCategory.products) {
-      const pId = oldCategory.products[i]?.toString();
-      if (pId === productId) oldCategory.products[i] = null;
+    if (!oldCategory.products.length) {
+      // delete the old category if empty
+      const imageUrl = oldCategory.image;
+      const fileName = imageUrl.split("/").pop();
+      const publicId = fileName.slice(0, fileName.indexOf("."));
+      cloudinaryDelete([publicId]);
+      console.log('old category empty now, deleting...');
+      await oldCategory.deleteOne();
     }
-    await oldCategory.save();
-    // console.log('oldcategory after save: ', oldCategory)
+    else{
+      await oldCategory.save();
+      console.log("oldcategory after save: ", oldCategory);
+    }
 
     // now check if the new category already exists in db.
     newCategory = await Category.findOne({ category: newCategory });
@@ -197,7 +205,7 @@ const deleteProduct = asyncHandler(async function (req, res, next) {
   const product = await Product.findById(productId);
   if (!product) return next(new ApiError(404, "product not found"));
 
-  if(product.image){
+  if (product.image) {
     const imageUrl = product.image;
     const fileName = imageUrl.split("/").pop();
     const publicId = fileName.slice(0, fileName.indexOf("."));
@@ -207,9 +215,19 @@ const deleteProduct = asyncHandler(async function (req, res, next) {
   // first de-list the product from respective category.
   const productCategory = await Category.findById(product.category);
 
-  for (const i in productCategory.products) {
-    const pId = productCategory.products[i]?.toString();
-    if (pId === productId) productCategory.products[i] = null;
+  // for (const i in productCategory.products) {
+  //   const pId = productCategory.products[i]?.toString();
+  //   if (pId === productId) productCategory.products[i] = null;
+  // }
+  productCategory.products = productCategory.products.filter(
+    (product) => product.toString() !== productId
+  );
+  if (!productCategory.products.length) {
+    const imageUrl = productCategory.image;
+    const fileName = imageUrl.split("/").pop();
+    const publicId = fileName.slice(0, fileName.indexOf("."));
+    cloudinaryDelete([publicId]);
+    productCategory.deleteOne(); //no need to await
   }
 
   await product.deleteOne();

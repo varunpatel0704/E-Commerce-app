@@ -19,7 +19,7 @@ function ProductFilter({ searchParams, setSearchParams, categories }) {
           className="border-slate-400 border outline-none rounded p-2"
         >
           <option value="all" key={'default'}>All</option>
-          {categories.map(({ _id, category }) => category!=='latest' && category !=='trending'&&(
+          {categories.map(({ _id, category }) => (
             <option key={_id} value={category}>
               {category[0].toUpperCase()+category.slice(1)}
             </option>

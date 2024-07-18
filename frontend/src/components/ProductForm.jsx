@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { BsTrash } from "react-icons/bs";
+import toast from "react-hot-toast";
 
 function ProductForm({ product, heading, buttonText, onSubmit, onDelete }) {
   const [name, setName] = useState(product?.name || "");
@@ -38,6 +39,7 @@ function ProductForm({ product, heading, buttonText, onSubmit, onDelete }) {
         (item) => item === undefined || item === ""
       )
     ) {
+      toast.error('Provide all fields');
       console.log("fill all inputs");
       return;
     }

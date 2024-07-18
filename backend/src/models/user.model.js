@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const addressSchema = new mongoose.Schema({
+export const addressSchema = new mongoose.Schema({
   address: {
     type: String,
     required: [true, "address is required"],

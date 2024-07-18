@@ -13,15 +13,16 @@ import { loggedOut } from "../features/auth/authSlice.js";
 
 function Profile() {
   const email = useSelector((state) => state.auth.id);
-  console.log(email);
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
+  
   const { data, isLoading, isError, isSuccess } = useGetUserQuery(email);
   const [updateUser, update] = useUpdateUserMutation();
   const [deleteAccount, del] = useDeleteAccountMutation();
-
+  
+  
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -348,7 +349,7 @@ function AvatarSection({
   );
 }
 
-export function InputField({
+ export function InputField({
   title,
   type = "text",
   minLength = 5,

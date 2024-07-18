@@ -28,6 +28,7 @@ function NewProductForm() {
       }
 
     } catch (error) {
+      toast.error('Failed to add product');
       console.log('new product creation error', error);
     }
     // console.log(

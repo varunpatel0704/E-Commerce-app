@@ -8,7 +8,7 @@ import { useGetCategoriesQuery } from "../features/products/productsApiSlice.js"
 function Categories({ categories }) {
   return (
     <div className="flex flex-wrap gap-5">
-      {categories.map((category) => (category.category !=='latest' && category.category !== 'trending' &&
+      {categories.map((category) => (
         <CategoryCard key={category._id} category={category} />
       ))}
     </div>

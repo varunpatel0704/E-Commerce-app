@@ -1,35 +1,69 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
-function CartItem({ item }) {
-  const [qty, setQty] = useState(String(item.quantity));  
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../features/cart/cartSlice.js";
+
+function CartItem({ item: { product, qty } }) {
+  const [quantity, setQuantity] = useState(qty);
+  const dispatch = useDispatch();
+
+  function handleIncrement(){
+    if(quantity+1 < product.stock){
+      if(quantity < 10){
+        setQuantity(q=>q+1);
+        dispatch(addToCart(product, quantity));
+      }
+      else  
+        toast.error('Quantity limit reached');
+    }
+    else
+      toast.error('Not enough stock');
+  }
+  function handleDecrement(){
+    if(quantity > 1){
+      setQuantity(q=>q-1);
+      dispatch(addToCart(product, quantity));
+    }
+  }
+
+
   return (
     <div className="cart flex justify-between items-center text-base p-2 border rounded mb-3 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-center p-1 gap-5 sm:gap-10 text-sm sm:text-base">
-        <Link to={`/product/${item.id}`}>
-          <img className="sm:w-24 w-20 object-contain" src={item.image} alt={item.name} />
+        <Link to={`/products/${product._id}`}>
+          <img
+            className="sm:w-24 w-20 object-contain rounded"
+            src={product.image}
+            alt={product.name}
+          />
         </Link>
         <article>
-          <p>{item.name}</p>
-          <p>${item.price}</p>
+          <p>{product.name}</p>
+          <p>${product.price}</p>
         </article>
       </div>
 
-      <div className="flex p-2 gap-1 sm:gap-3 justify-center items-center">
-        <button className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"><FaMinus/></button>
-        <input
-          type="text"
-          min={1}
-          max={10}
-          value={qty}
-          onChange={e=>setQty(String(e.target.value))}
-          className="w-5 text-center text-sm sm:text-base"
-        />
-        <button className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"><FaPlus/></button>
+      <div className="flex gap-1 sm:gap-3 items-center">
+        <button
+          className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"
+          onClick={handleDecrement}
+        >
+          <FaMinus />
+        </button>
+        <span className="text-lg">{quantity}</span>
+        <button
+          className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"
+          onClick={handleIncrement}
+        >
+          <FaPlus />
+        </button>
         <button className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm" >
           <FaTrash />
         </button>
       </div>
+      
     </div>
   );
 }

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import {
   FaBoxOpen,
-  FaShoppingBag,
   FaSignInAlt,
   FaSignOutAlt,
   FaUser,
   FaUserCircle,
   FaUserLock,
 } from "react-icons/fa";
+import { MdShoppingCart } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar.jsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,7 +82,7 @@ function Header() {
   }
 
   return (
-    <header className="bg-white sticky top-0 z-10 w-full shadow-md">
+    <header className="bg-white header sticky top-0 z-10 w-full shadow-md">
       <nav className="flex items-center justify-between py-0.5 w-full">
         <div className="flex sm:flex-row flex-col w-full sm:w-7/12 gap-3 justify-evenly sm:items-center items-start">
           <span className="sm:text-5xl text-3xl ml-3">
@@ -113,16 +113,12 @@ function Header() {
             </Link>
           )}
 
-          <span className="p-1 sm:p-3 sm:text-xl ">
+          <span className="p-1 sm:p-3 sm:text-2xl ">
             <Link to="/cart">
-              <FaShoppingBag />
+              <MdShoppingCart />
             </Link>
           </span>
         </div>
-
-        {/* <button className="sm:hidden inline cursor-pointer">
-          <FaCaretDown />
-        </button> */}
       </nav>
     </header>
   );

@@ -28,6 +28,7 @@ import ManageOrder from "./pages/admin/ManageOrder.jsx";
 import NewProductForm from "./pages/admin/NewProductForm.jsx";
 import PieCharts from "./pages/admin/PieCharts.jsx";
 import CreateUserForm from "./pages/admin/CreateUser.jsx";
+import Payment from "./pages/Payment.jsx";
 // import ProductForm from "./components/ProductForm.jsx";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
@@ -100,7 +101,7 @@ function App() {
 
           {/* Login required for below routes */}
           <Route element={<RequireAuth />}>
-            <Route path="checkout" element={<Checkout />} />
+            <Route path="checkout" element={<Checkout />} />            
             <Route path="orders" element={<Orders />} />
             <Route path="orders/:orderId" element={<OrderDetails />} />
             <Route path="profile" element={<Profile />} />
@@ -142,7 +143,12 @@ function App() {
               <Route path="generateCoupon" element={<GenerateCoupon />} />
             </Route>
           </Route>
+        </Route> 
+
+        <Route path="/checkout/payment" element={<RequireAuth/>}>
+          <Route index element={<Payment/>}/>
         </Route>
+
       </Routes>
     </Suspense>
   );

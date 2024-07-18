@@ -1,4 +1,4 @@
-function CheckBox({ id, name, label, onOrderFilterChange }) {
+function RadioButton({ id, name, label, onOrderFilterChange }) {
   return (
     <div className="flex gap-2">
       <input
@@ -26,31 +26,32 @@ function OrderFilter({ onOrderFilterChange }) {
       <div className="flex flex-col gap-2.5">
         <h4 className="text-lg mb-1 font-medium">Order Status</h4>
 
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="all orders"
           name="orderStatus"
           label="All"
         />
-        <CheckBox
+        <RadioButton
+          onOrderFilterChange={onOrderFilterChange}
+          id="processing"
+          name="orderStatus"
+          label="Processing"
+        />
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="confirmed"
           name="orderStatus"
-          label="On the way"
+          label="Confirmed"
         />
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="delivered"
           name="orderStatus"
           label="Delivered"
         />
-        <CheckBox
-          onOrderFilterChange={onOrderFilterChange}
-          id="canceled"
-          name="orderStatus"
-          label="Canceled"
-        />
-        <CheckBox
+        
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="returned"
           name="orderStatus"
@@ -61,25 +62,25 @@ function OrderFilter({ onOrderFilterChange }) {
 
       <div className="flex flex-col gap-2.5">
         <h4 className="text-lg mb-1 font-medium">Order Time</h4>
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="all time"
           name="time"
           label="All time"
         />
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="30 days"
           name="time"
           label="Last 30 days"
         />
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="6 months"
           name="time"
           label="Last 6 months"
         />
-        <CheckBox
+        <RadioButton
           onOrderFilterChange={onOrderFilterChange}
           id="year"
           name="time"

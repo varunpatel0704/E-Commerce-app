@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const paymentSchema = new mongoose.Schema({
   trxnId:{
     type: Number,
-    // required: [true, 'trxnId is required']
+    required: [true, 'trxnId is required']
   },
 
   method:{
@@ -17,19 +17,19 @@ const paymentSchema = new mongoose.Schema({
     required: [true, 'payment amount is required']
   },
 
-  paidBy: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
 
-  paidFor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Order'
-  },
+  // orderId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Order'
+  // },
 
   status: {
     type: String,
-    enum: ['pending', 'complete', 'refunded']
+    enum: ['Pending', 'Complete', 'Refunded']
   }
 
 }, {timestamps : true});

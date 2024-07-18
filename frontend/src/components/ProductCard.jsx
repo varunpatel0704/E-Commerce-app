@@ -1,11 +1,23 @@
 import { Link } from "react-router-dom";
 import { HiPlus } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import {addToCart, calculateCartValue} from '../features/cart/cartSlice.js';
+import toast from "react-hot-toast";
+
 function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  function handleAddToCart(){
+    dispatch(addToCart(product, 1));
+    dispatch(calculateCartValue());
+    toast.success('Added to cart');
+  }
+
+
   return (
     <Link to={`/products/${product._id}`}>
-      <div className="product-card flex flex-col justify-around items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg">
+      <div className="product-card flex flex-col justify-evenly items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg">
         <img
-          className="object-contain w-24 h-24"
+          className="object-contain w-24 h-24 rounded"
           src={product.image}
           alt={product.name}
         />
@@ -21,7 +33,7 @@ function ProductCard({ product }) {
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault(); // to prevent link from activating
-            console.log("add to cart");
+            handleAddToCart();
           }}
         >
           Add <HiPlus />
