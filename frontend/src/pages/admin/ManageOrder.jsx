@@ -176,6 +176,17 @@ function ManageOrder() {
           </div>
         </section>
 
+        {/* Replace the below section with this commented code block */}
+        {/* <h3 className="w-full font-medium text-lg text-black text-opacity-80">
+              Order Items
+            </h3>
+            <ul className="rounded-bl-md rounded-br-md last:border-b-0 mt-4 w-[80%] scroll-hidden">
+            {orderItems.map((item) => (
+              <CheckoutItem key={item._id} item={item} url={`/`} />
+            ))}
+          </ul> */}
+
+
         {/* order items */}
         <section className="w-[52%] p-4 rounded shadow-sm flex flex-col justify-between">
           <div className="scroll-hidden h-[367px]">

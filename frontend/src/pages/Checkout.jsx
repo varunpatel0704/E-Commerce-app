@@ -61,7 +61,8 @@ function Checkout() {
 
   if (!cartItems.length) return <h1>Your cart is empty</h1>;
 
-  if (isLoading || update.isLoading || paymentIntent.isLoading) return <h1>Loading...</h1>;
+  if (isLoading || update.isLoading || paymentIntent.isLoading)
+    return <h1>Loading...</h1>;
 
   function handleInputChange(e) {
     const { name: property, value } = e.target;
@@ -135,24 +136,31 @@ function Checkout() {
     }
   }
 
-  async function handlePlaceOrder(){
+  async function handlePlaceOrder() {
     try {
-      console.log('sending request for payment intent', total);
-      const res = await createPaymentIntent({amount: total}).unwrap();
-      if(res.data){
+      console.log("sending request for payment intent", total);
+      const res = await createPaymentIntent({ amount: total }).unwrap();
+      if (res.data) {
         const orderDetails = {
           shippingAddress: shippingInfo,
           userId: email,
-          orderItems: cartItems.map(({product, qty})=>({productId: product._id, qty})),
-          priceDetails: {subTotal, tax, shippingCharges, discount, total}
-        }
-        navigate('/checkout/payment', {state: {client_secret: res.data.client_secret, orderDetails}});
+          orderItems: cartItems.map(({ product, qty }) => ({
+            productId: product._id,
+            qty,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+          })),
+          priceDetails: { subTotal, tax, shippingCharges, discount, total },
+        };
+        navigate("/checkout/payment", {
+          state: { clientSecret: res.data.client_secret, orderDetails },
+        });
       }
     } catch (error) {
-      console.log('error creating payment intent', error);
+      console.log("error creating payment intent", error);
     }
   }
-
 
   return (
     <div className="flex sm:flex-row flex-col-reverse w-full gap-3 min-h-[95vh]">
@@ -261,8 +269,12 @@ function Checkout() {
             Order Summary
           </h2>
           <ul className="rounded-bl-md rounded-br-md last:border-b-0 mt-4">
-            {cartItems.map((item) => (
-              <CheckoutItem key={item.product._id} item={item} url={`/`} />
+            {cartItems.map(({ product, qty }) => (
+              <CheckoutItem
+                key={product._id}
+                item={{ ...product, productId:product._id, qty }}
+                url={`/`}
+              />
             ))}
           </ul>
         </div>
@@ -284,15 +296,15 @@ function Checkout() {
   );
 }
 
-export function CheckoutItem({ item: { product, qty } }) {
-  const { name, price, _id, image } = product;
+export function CheckoutItem({ item: product }) {
+  const { name, price, productId, image, qty } = product;
   return (
     <li className="flex justify-center items-end gap-3 py-4 border-b last-of-type:border-b-0 last-of-type:pb-0 text-sm">
-      <Link to={`/products/${_id}`}>
-        <img src={image} alt="" className="object-contain rounded w-12 h-12" />
+      <Link to={`/products/${productId}`}>
+        <img src={image} alt="" className="object-contain rounded w-16 h-16" />
       </Link>
-      <article>
-        <p className="text-base">{name}</p>
+      <article className="flex flex-col justify-between h-16">
+        <p className="text-lg">{name}</p>
         <span className="">Qty: {qty}</span>
       </article>
       <span className="ml-auto self-end">${qty * Number(price)}</span>

@@ -14,17 +14,21 @@ const orderItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Product",
     required: [true, "productId is required to place order"],
-  }, 
+  },
+  name: String,
+  image: String,
+  price: Number,
   status: {
     currentStatus: {
       type: String,
-      enum: ["Processing", "Confirmed", "Delivered", "Returned"],
-      default: "Processing",
+      enum: ["Confirmed", "Shipped", "Delivered", "Returned"],
+      default: "Confirmed",
     },
-    description: String,
+    description: { type: String, default: "Your order is confirmed" },
   },
-  qty: Number
-})
+  deliveryDate: String,
+  qty: Number,
+});
 
 const orderSchema = new mongoose.Schema(
   {
@@ -34,12 +38,10 @@ const orderSchema = new mongoose.Schema(
       required: [true, "userId is required to place order"],
     },
 
-    orderItems: [orderItemSchema],
+    fullName: String,
+    phoneNumber: Number,
 
-    orderDate: {
-      type: Date,
-      required: true,
-    },
+    orderItems: [orderItemSchema],
 
     paymentInfo: {
       type: mongoose.Schema.Types.ObjectId,
@@ -55,6 +57,7 @@ const orderSchema = new mongoose.Schema(
       type: addressSchema,
       required: [true, "shipping details are required to place order"],
     },
+
   },
   { timestamps: true }
 );

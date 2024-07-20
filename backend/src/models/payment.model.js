@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 
 const paymentSchema = new mongoose.Schema({
   trxnId:{
-    type: Number,
+    type: String,
     required: [true, 'trxnId is required']
   },
 
   method:{
     type: String,
     required: [true, 'payment method is required'],
-    enum: ['Cash, Card, Upi']
+    enum: ['Cash', 'Card', 'Upi']
   },
 
   amount: {
@@ -22,10 +22,10 @@ const paymentSchema = new mongoose.Schema({
     ref: 'User'
   },
 
-  // orderId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Order'
-  // },
+  orderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order'
+  },
 
   status: {
     type: String,

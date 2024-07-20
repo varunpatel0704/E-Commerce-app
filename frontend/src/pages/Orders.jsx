@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import OrderItem from "../components/OrderItem.jsx";
 // import Filters from '../components/Filters.jsx'
 import OrderFilter from "../components/OrderFilter.jsx";
+import { useGetOrdersQuery } from "../features/orders/ordersApiSlice.js";
+import { useSelector } from "react-redux";
+
 const orders = [
   {
     id: 1,
     item: "camera",
     deliveryDate: "May 21, 2024",
     status: {
-      current: "canceled",
+      current: "Canceled",
       discription: "Refund processed"
     },
     amount: "116000",
@@ -54,11 +57,31 @@ const orders = [
   },
 ];
 
+
+
 function Orders() {
+  const email = useSelector(state=>state.auth.id);
+  const {data:res, isLoading, isFetching, isError} = useGetOrdersQuery(email)
+  
   const [orderFilter, setOrderFilter] = useState({
     orderStatus: 'all',
     time: 'all'
   });
+  if(isLoading) return <h1>Loading...</h1>
+  
+  const orders = res.data;
+  console.log('orders for', email,  orders);
+  const orderItems = [];
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i];
+    for (let j = 0; j < order.orderItems.length; j++) {
+      const element = order.orderItems[j];
+      // console.log(element);
+      orderItems.push(
+        <OrderItem key={element._id} order={{order: element, _id: order._id}} />
+      )
+    }
+  }
 
   return (
     <div className="w-full h-section flex gap-5 sm:flex-row flex-col">
@@ -68,9 +91,7 @@ function Orders() {
       </aside>
       <div className="sm:w-4/5 w-full flex flex-col gap-3">
         <h2 className="text-3xl p-2">Orders</h2>
-        {orders.map((order) => (
-          <OrderItem key={order.id} order={order} />
-        ))}
+        {orderItems}
       </div>
     </div>
   );
