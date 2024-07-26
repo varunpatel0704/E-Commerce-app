@@ -15,7 +15,7 @@ function ProductCard({ product }) {
 
   return (
     <Link to={`/products/${product._id}`}>
-      <div className="product-card flex flex-col justify-evenly items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg">
+      <div className="product-card flex flex-col justify-evenly items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg outline-none">
         <img
           className="object-contain w-24 h-24 rounded"
           src={product.image}

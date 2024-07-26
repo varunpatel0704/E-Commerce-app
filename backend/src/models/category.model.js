@@ -4,8 +4,8 @@ const categorySchema = new mongoose.Schema({
   category: {
     type: String,
     default: 'miscellaneous',
-    lowercase: true
-    // required: [true, 'category name is required']
+    lowercase: true,
+    required: [true, 'category name is required']
   },
   image: {
     type: String,

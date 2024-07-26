@@ -6,10 +6,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query({
       query: () => `${baseUrl}/all`,
+      providesTags: (result)=>[...result.data.map(user=>({type: 'User', id: user.email})), {type: 'User', id: 'ALL'}]
     }),
 
     getUser: builder.query({
-      query: (id) => `${baseUrl}/${id}`,
+      query: (email) => `${baseUrl}/${email}`,
+      providesTags: (result, error, email)=>[{type: 'User', id: email}]
     }),
 
     createUser: builder.mutation({
@@ -18,6 +20,8 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: user,
       }),
+
+      invalidatesTags: [{type: 'User', id: 'ALL'}]
     }),
 
     updateUser: builder.mutation({
@@ -26,22 +30,25 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: details,
       }),
+      invalidatesTags: (result, error, arg)=>[{type: 'User', id: arg.email}]
     }),
 
     deleteUser: builder.mutation({
-      query: (id) => ({
-        url: `${baseUrl}/${id}`,
+      query: (email) => ({
+        url: `${baseUrl}/${email}`,
         method: "DELETE",
-        body: id,
+        body: email,
       }),
+      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}, {type: 'User', id: 'ALL'}]
     }),
 
     deleteAccount: builder.mutation({
-      query: (id) => ({
-        url: `${baseUrl}/delete/${id}`,
+      query: (email) => ({
+        url: `${baseUrl}/delete/${email}`,
         method: "DELETE",
-        body: id,
-      })
+        body: email,
+      }),
+      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}]
     })
   }),
 });

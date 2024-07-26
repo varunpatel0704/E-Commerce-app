@@ -85,11 +85,11 @@ const columns = [
 // ];
 
 function AdminUsersWrapper(){
-  const {data, isLoading, isFetching, isError, isSuccess} = useGetAllUsersQuery();
+  const {data, currentData, isLoading, isFetching, isError, isSuccess} = useGetAllUsersQuery();
   const [deleteUser, del] = useDeleteUserMutation();
 
   const users = data?.data;
-  console.log(users);
+  console.log('all users rendered ',users);
   async function handleDelete(email){
     try {
       const res = await deleteUser(email).unwrap();
@@ -110,7 +110,7 @@ function AdminUsersWrapper(){
     action: <Link onClick={()=>handleDelete(email)} ><BsTrash style={{display: 'inline'}} /></Link>
   }))
 
-  if(isLoading || del.isLoading ) return <h1>Loading...</h1>;
+  if(isLoading || del.isLoading || isFetching) return <h1>Loading...</h1>;
 
   else return <AdminUsers rows={rows}/>;
 

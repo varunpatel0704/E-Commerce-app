@@ -56,6 +56,8 @@ const apiSlice = createApi({
 
   baseQuery: baseQueryWithReAuth,
 
+  tagTypes: ['User', 'Order', 'Product', 'Category', 'Error'],
+
   endpoints: (builder) => ({}),
 });
 

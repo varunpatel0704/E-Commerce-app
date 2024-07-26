@@ -5,9 +5,17 @@ import { stripe } from "../app.js";
 import ApiResponse from '../utils/ApiResponse.class.js';
 import User from '../models/user.model.js';
 import Payment from '../models/payment.model.js';
+import Product from '../models/product.model.js';
 
 async function reduceStock(orderItems){
-
+  // fetch each product and adjust the stock as per the qty ordered.
+  for (let i = 0; i < orderItems.length; i++) {
+    const item = orderItems[i];
+    
+    const product = await Product.findById(item.productId);
+    product.stock -= item.qty;
+    product.save(); // don't await save.
+  }
 };
 
 const createPaymentIntent = asyncHandler(async function(req, res, next){
@@ -24,7 +32,7 @@ const createPaymentIntent = asyncHandler(async function(req, res, next){
 });
 
 const newOrder = asyncHandler(async function(req, res, next){
-  const {shippingAddress, userInfo, orderItems, priceDetails, paymentInfo } = req.body;
+  const {shippingAddress, userId, orderItems, priceDetails, paymentInfo } = req.body;
   console.log('new order request received', req.body);
   // steps to place order.
   // 1. get the relevant details.
@@ -35,7 +43,7 @@ const newOrder = asyncHandler(async function(req, res, next){
   // 6. save the payment info id in the order document and order id in the payment info object.
   // 7. update the product qtys 
   // 8. place the order.
-  const user = await User.findOne({email: userInfo.userId}); // to get mongo _id which will be included in the order object.
+  const user = await User.findOne({email: userId}); // to get mongo _id which will be included in the order object.
   const newOrder = new Order({
     userId: user._id,
     fullName: user.fullName,
@@ -99,4 +107,33 @@ const getAllOrders = asyncHandler(async function(req, res, next){
   return res.status(200).json(new ApiResponse(200, 'Fetched all orders', allOrders));
 });
 
-export {createPaymentIntent, newOrder, getOrder, getOrders, getAllOrders};
+const processOrder = asyncHandler(async function(req, res, next){
+  const {orderId} = req.params;
+  const order = await Order.findById(orderId);
+
+  // now change the status of each orderItem in the order
+  for (let i = 0; i < order.orderItems.length; i++) {
+    const item = order.orderItems[i];
+    switch (item.status.currentStatus) {
+      case 'Confirmed':
+        item.status.currentStatus = 'Shipped'; 
+        item.status.description = 'On the way';
+        break;
+
+      case 'Shipped':
+        item.status.currentStatus = 'Delivered'; 
+        item.status.description = 'Your order has been delivered';
+        item.deliveryDate = new Date();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  const savedOrder = await order.save();
+  console.log('order processed ', savedOrder);
+  return res.status(200).json(new ApiResponse(200,  'Order processed'));
+});
+
+export {createPaymentIntent, newOrder, getOrder, getOrders, getAllOrders, processOrder};

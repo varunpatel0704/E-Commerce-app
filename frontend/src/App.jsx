@@ -129,7 +129,7 @@ function App() {
 
               <Route path="orders">
                 <Route index element={<AdminOrders />} />
-                <Route path="manage/:id" element={<ManageOrder />} />
+                <Route path="manage/:orderId" element={<ManageOrder />} />
               </Route>
             </Route>
 

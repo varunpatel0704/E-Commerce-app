@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../features/cart/cartSlice.js";
+import { addToCart, removeFromCart } from "../features/cart/cartSlice.js";
 
 function CartItem({ item: { product, qty } }) {
   const [quantity, setQuantity] = useState(qty);
@@ -27,7 +27,9 @@ function CartItem({ item: { product, qty } }) {
       dispatch(addToCart(product, quantity));
     }
   }
-
+  function handleRemoveFromCart(){
+    dispatch(removeFromCart(product))
+  }
 
   return (
     <div className="cart flex justify-between items-center text-base p-2 border rounded mb-3 shadow-sm hover:shadow-md transition-shadow">
@@ -59,7 +61,7 @@ function CartItem({ item: { product, qty } }) {
         >
           <FaPlus />
         </button>
-        <button className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm" >
+        <button className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm" onClick={handleRemoveFromCart} >
           <FaTrash />
         </button>
       </div>

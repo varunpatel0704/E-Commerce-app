@@ -1,4 +1,4 @@
-function CategoryCard({category}) {
+function CategoryCard({category, onClick}) {
   return (
     <div className="product-card flex flex-col justify-around items-center rounded-md border w-[13rem] h-[16rem] shadow hover:shadow-lg">
       <img
@@ -17,7 +17,8 @@ function CategoryCard({category}) {
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault(); // to prevent link from activating
-          console.log("add to cart");
+          onClick(category.category);
+
         }}
       >
         See More

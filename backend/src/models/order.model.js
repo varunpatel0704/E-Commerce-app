@@ -27,7 +27,7 @@ const orderItemSchema = new mongoose.Schema({
     description: { type: String, default: "Your order is confirmed" },
   },
   deliveryDate: String,
-  qty: Number,
+  qty: { type: Number, required: [true, "order item qty is required"] },
 });
 
 const orderSchema = new mongoose.Schema(
@@ -57,7 +57,6 @@ const orderSchema = new mongoose.Schema(
       type: addressSchema,
       required: [true, "shipping details are required to place order"],
     },
-
   },
   { timestamps: true }
 );

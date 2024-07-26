@@ -13,12 +13,13 @@ function OrderStatus({ children, description }) {
 function OrderItem({ order:{ order, _id} }) {
   console.log(order)
   const { name, deliveryDate, price, image, status } = order;
+  const deliveredOn = deliveryDate? new Date(deliveryDate): undefined;
   let content;
   if (status.currentStatus.toLowerCase() === "delivered") {
     content = (
       <OrderStatus description={status.description}>
         <span className="w-3 h-3 rounded-full bg-green-600 opacity-90"></span>
-        Delivered on {deliveryDate}
+        Delivered on {deliveredOn?.toDateString()}
       </OrderStatus>
     );
   } else if (status.currentStatus.toLowerCase() === "returned") {
@@ -33,7 +34,7 @@ function OrderItem({ order:{ order, _id} }) {
     content = (
       <OrderStatus description={status.description}>
         <span className="w-3 h-3 rounded-full bg-yellow-400"></span> Arriving on{" "}
-        {deliveryDate}
+        {deliveredOn?.toDateString()}
       </OrderStatus>
     );
   }

@@ -6,11 +6,12 @@ function ProductFilter({ searchParams, setSearchParams, categories }) {
   return (
     <div className="filters flex sm:flex-col gap-5 p-5">
       <h3 className="text-2xl font-medium text-black text-opacity-70">Filters</h3>
-      {/* Add filter options here */}
+
+      {/* category */}
       <hr className="border" />
       <div className="filter-category">
         <h4 className="mb-1.5 font-medium text-black text-opacity-70">Category </h4>
-        <select
+        <select          
           value={category}
           onChange={
             (e) =>
@@ -28,8 +29,8 @@ function ProductFilter({ searchParams, setSearchParams, categories }) {
         </select>
       </div>
 
-      {/* <hr className="border"/> */}
-
+      
+      {/* price */}
       <div className="filter-price">
         <h4 className="font-medium text-black text-opacity-70">Price Upto {price}</h4>
         <input
@@ -44,22 +45,24 @@ function ProductFilter({ searchParams, setSearchParams, categories }) {
           }
         />
       </div>
-      {/* Add more filters as needed */}
+      
       <hr className="border" />
 
+      {/* sort */}
       <div className="sort-options flex-shrink">
         <h3 className="text-xl mb-1.5 font-medium text-black text-opacity-70">Sort By</h3>
         <select
+          disabled={category === 'all'}
           value={sortOption}
           onChange={(e) =>
             setSearchParams({ category, sortOption: e.target.value, price })
           }
-          className="border-slate-400 border outline-none rounded p-2"
+          className="border-slate-400 border outline-none rounded p-2 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <option value="default">Default</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
-          <option value="popularity">Popularity</option>
+          {/* <option value="popularity">Popularity</option> */}
           <option value="newest">Newest Arrivals</option>
         </select>
       </div>
