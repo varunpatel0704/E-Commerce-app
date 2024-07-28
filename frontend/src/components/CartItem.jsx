@@ -33,17 +33,17 @@ function CartItem({ item: { product, qty } }) {
 
   return (
     <div className="cart flex justify-between items-center text-base p-2 border rounded mb-3 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-center p-1 gap-5 sm:gap-10 text-sm sm:text-base">
+      <div className="flex items-center justify-center p-1 text-sm sm:gap-10 sm:text-base">
         <Link to={`/products/${product._id}`}>
           <img
-            className="sm:w-24 w-20 object-contain rounded"
+            className="sm:w-20 aspect-auto w-20 object-cover rounded"
             src={product.image}
             alt={product.name}
           />
         </Link>
-        <article>
-          <p>{product.name}</p>
-          <p>${product.price}</p>
+        <article className="flex flex-col justify-center items-start gap-2 pr-2">
+          <p>{product.name.length <= 60? product.name: product.name.slice(0, 60)+'...'}</p>
+          <p>₹{product.price}</p>
         </article>
       </div>
 

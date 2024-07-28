@@ -29,86 +29,6 @@ const columns = [
     accessor: "action",
   },
 ];
-// also add product id below the name so that it can be searched and also add the id to dynamic route link
-// const data = [
-//   {
-//     photo: <Link to={`/products/${1}`}><img src={src} /></Link>,
-//     name: "Nikon DSLR 400D ultra pro max with 1000x zoom",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-//   {
-//     photo: <img src={src} />,
-//     name: "Camera",
-//     price: "$1200",
-//     stock: "101",
-//     action: <Link to={'/admin/dashboard/products/edit/1'} className="product-edit-link" >Edit</Link>,
-//   },
-// ];
 
 function AdminProductWrapper(){ //necessary, otherwise react throws error: less hooks rendered.
   const {data, isLoading, isError, error, isSuccess} = useGetAllProductsQuery();
@@ -118,7 +38,7 @@ function AdminProductWrapper(){ //necessary, otherwise react throws error: less 
   const rows = products?.map(({_id, image, name, price, stock})=>({
     image: <Link to={`/products/${_id}`}><img src={image} /></Link>, 
     name,
-    price,
+    price: `₹${price}`,
     stock,
     action: <Link to={`/admin/dashboard/products/edit/${_id}`} className="product-edit-link" >Edit</Link>,
   }));

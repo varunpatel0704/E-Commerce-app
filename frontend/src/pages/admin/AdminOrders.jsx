@@ -41,7 +41,7 @@ function AdminOrdersWrapper() {
     rows.push({
       id: _id,
       date,
-      total: priceDetails.total,
+      total: `₹${priceDetails.total}`,
       status: orderItems[0].status.currentStatus,
       action: (
         <Link to={`/admin/dashboard/orders/manage/${_id}`}>Manage</Link>

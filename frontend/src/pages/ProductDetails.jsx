@@ -19,7 +19,6 @@ function ProductDetails() {
 
   const { data, isLoading, isError } = useGetProductQuery(id);
   const product = data?.data;
-
   function handleAddToCart() {
     dispatch(addToCart(product, qty));
     dispatch(calculateCartValue());
@@ -70,11 +69,11 @@ function ProductDetails() {
               -{product.discount}% 
             </span> 
             <span className="text-3xl font-semibold text-gray-700">
-              {' '}${discountedPrice}
+              {' '}₹{discountedPrice}
             </span>{" "}
           </p>
           <p className="text-gray-500">
-            List Price: <span className="line-through font-semibold">${product.price}</span>
+            List Price: <span className="line-through font-semibold">₹{product.price}</span>
           </p>
         </section>
 

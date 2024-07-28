@@ -8,7 +8,7 @@ function CategoryCard({category, onClick}) {
       />
       <h3 className="">
         {category.category.length < 20
-          ? category.category
+          ? category.category[0].toUpperCase()+category.category.slice(1)
           : category.category.slice(20) + "..."}
       </h3>
 

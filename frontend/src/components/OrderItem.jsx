@@ -51,7 +51,7 @@ function OrderItem({ order:{ order, _id} }) {
           <p className=" mt-3">{name}</p>
         </article>
 
-        <article className="mt-3 w-2/12">${price}</article>
+        <article className="mt-3 w-2/12">₹{price}</article>
 
         {content}
       </div>

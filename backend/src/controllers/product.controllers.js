@@ -82,6 +82,7 @@ const addProduct = asyncHandler(async function (req, res, next) {
     name,
     description,
     stock,
+    initialStock: stock,
     price,
     discount,
     image,
@@ -192,6 +193,7 @@ const updateProduct = asyncHandler(async function (req, res, next) {
   }
 
   oldProduct.overwrite(product);
+  oldProduct.initialStock = product.stock;//we won't receive this field from frontend so need to set it manully.
   const updatedProduct = await oldProduct.save();
 
   return res

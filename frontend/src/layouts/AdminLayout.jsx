@@ -9,7 +9,7 @@ import { FaChartPie, FaChartBar, FaChartLine,  } from "react-icons/fa";
 function DashboardLayout() {
   const location = useLocation();
   return (
-    <main className="min-h-screen flex p-2 gap-3 bg-stone-200 bg-opacity-25 ">
+    <main className="min-h-screen flex p-2.5 gap-3 bg-stone-200 bg-opacity-25 ">
       <main className="w-[20%] h-[98vh] border rounded bg-white shadow-md flex flex-col gap-6 sticky">
         <h2 className="text-3xl p-4">
           <Link to="/">Logo</Link>

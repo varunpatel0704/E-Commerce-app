@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* @import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css"; */
 
 * {
   box-sizing: border-box;
@@ -411,29 +413,28 @@
       color: rgb(255, 44, 44);
     }
   }
-  
-  button.delete-account-btn{
-    
-      &:hover {
-        opacity: 0.75;
-      }
-      /* width: 3rem; */
-      text-decoration: none;
-      font-size: large;
-      padding: 0.8rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      background-color: rgb(255, 44, 44, 0.15);
-      border: 1px solid rgb(255, 44, 44, 0.15);
-      color: rgb(255, 44, 44);
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  
+
+  button.delete-account-btn {
+    &:hover {
+      opacity: 0.75;
+    }
+    /* width: 3rem; */
+    text-decoration: none;
+    font-size: large;
+    padding: 0.8rem;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgb(255, 44, 44, 0.15);
+    border: 1px solid rgb(255, 44, 44, 0.15);
+    color: rgb(255, 44, 44);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
-  .profile-form, .shipping-info-form {
+  .profile-form,
+  .shipping-info-form {
     fieldset {
       width: 70%;
       /* box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); */
@@ -447,7 +448,8 @@
         color: rgb(0, 0, 0, 0.6);
         /* font-weight: 500; */
       }
-      input, p {
+      input,
+      p {
         overflow: auto;
         &:disabled {
           background-color: white;
@@ -475,9 +477,36 @@
     }
   }
 
-  /* .header{
-    background-color: rgb(23, 127, 255);
-    color: white;
-  } */
+  .hero-slider-img {
+    width: 100%;
+    height: auto;
+  }
+
+  .arrow-next, .arrow-prev {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    width: 2.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.115);
+    background-color: rgba(0, 0, 0, 0.306);
+    border-radius: 4px;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.306);
+    }
+    &::before{
+      display: none;
+    }
+  }
+
+  .arrow-next{
+    transform: translate(-15px, -40px);
+    z-index: 1;
+  }
+  .arrow-prev{
+    transform: translate(15px, -40px);
+    z-index: 1;
+  }
+
 }
 

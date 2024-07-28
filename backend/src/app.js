@@ -4,6 +4,8 @@ import cors from "cors";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import userRouter from "./routes/user.routes.js";
 import productRouter from "./routes/product.routes.js";
+import statRouter from "./routes/stats.routes.js";
+
 import Stripe from "stripe";
 // import dotenv from 'dotenv'
 import orderRouter from "./routes/order.routes.js";
@@ -31,6 +33,8 @@ app.use(cookieParser());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/dashboard", statRouter);
+
 app.use(errorHandler);
 
 export default app;

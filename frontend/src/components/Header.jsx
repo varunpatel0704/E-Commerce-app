@@ -1,6 +1,8 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   FaBoxOpen,
+  FaSearch,
   FaSignInAlt,
   FaSignOutAlt,
   FaUser,
@@ -8,16 +10,14 @@ import {
   FaUserLock,
 } from "react-icons/fa";
 import { MdShoppingCart } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
-import SearchBar from "./SearchBar.jsx";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../features/auth/authApiSlice.js";
 import { loggedOut } from "../features/auth/authSlice.js";
-import toast from "react-hot-toast";
 
 function Header() {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   const user = useSelector((state) => state.auth);
@@ -29,8 +29,8 @@ function Header() {
     try {
       const res = await logout();
       console.log("loggedOut ", res);
-      toast.success('Logged out');
-      
+      toast.success("Logged out");
+
       setIsOpen(false);
       navigate("/");
     } catch (error) {
@@ -45,7 +45,7 @@ function Header() {
       open={isOpen}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
-      className="border rounded-md shadow-lg absolute sm:top-12 top-20 sm:-left-[34px] -left-20 py-4 px-6 w-32"
+      className="border rounded-md shadow-lg absolute sm:top-12 top-20 sm:left-[165px] -left-20 py-4 px-6 w-32"
     >
       <div className="flex flex-col justify-center items-start gap-5">
         {user.role === "admin" && (
@@ -84,14 +84,25 @@ function Header() {
   return (
     <header className="bg-white header sticky top-0 z-10 w-full shadow-md">
       <nav className="flex items-center justify-between py-0.5 w-full">
-        <div className="flex sm:flex-row flex-col w-full sm:w-7/12 gap-3 justify-evenly sm:items-center items-start">
-          <span className="sm:text-5xl text-3xl ml-3">
-            <Link to="/">Logo</Link>
-          </span>
-          <SearchBar onSearch={onSearch} />
-        </div>
+        {/* <div className="flex sm:flex-row flex-col w-full sm:w-7/12 gap-3 justify-between sm:items-center items-start"> */}
+        <span className="sm:text-5xl text-3xl ml-3">
+          <Link to="/">Logo</Link>
+        </span>
+
+        {/* {location.pathname !== "/products" && (
+            <p className="w-full">
+              <SearchBar onSearch={onSearch} />
+            </p>
+          )} */}
+        {/* </div> */}
 
         <div className="h-full flex flex-col-reverse sm:flex-row justify-center items-center gap-5 sm:gap-8 py-1 px-3 sm:px-2 relative mr-2">
+          <Link to={"/products"} style={{visibility: location.pathname==='/products'&&'hidden'}}>
+            <p className="flex justify-center items-center gap-1.5 header-dialog-link mt-0.5">
+              <FaSearch />{" "}
+              <span className="text-lg">Browse collections</span>
+            </p>
+          </Link>
           {user.accessToken ? (
             <>
               <button
@@ -106,7 +117,7 @@ function Header() {
             </>
           ) : (
             <Link to="/login">
-              <span className="p-1 sm:p-3 sm:text-xl flex items-center gap-2">
+              <span className="p-1 sm:p-3 sm:text-xl flex items-center gap-2 header-dialog-link">
                 Login
                 <FaSignInAlt />
               </span>

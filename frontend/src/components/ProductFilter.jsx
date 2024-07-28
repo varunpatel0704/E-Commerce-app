@@ -1,4 +1,4 @@
-function ProductFilter({ searchParams, setSearchParams, categories }) {
+function ProductFilter({ searchParams, setSearchParams, categories, maxPrice }) {
   const category = searchParams.get("category");
   const sortOption = searchParams.get("sortOption");
   const price = searchParams.get("price");
@@ -34,11 +34,13 @@ function ProductFilter({ searchParams, setSearchParams, categories }) {
       <div className="filter-price">
         <h4 className="font-medium text-black text-opacity-70">Price Upto {price}</h4>
         <input
-          className="w-11/12 mt-1"
+          className="w-11/12 mt-1 disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={category === 'all'}
           type="range"
-          min={100}
-          max={100000}
+          min={0}
+          max={maxPrice+100}
           step={100}
+          defaultValue={maxPrice}
           value={price}
           onChange={(e) =>
             setSearchParams({ category, sortOption, price: e.target.value })

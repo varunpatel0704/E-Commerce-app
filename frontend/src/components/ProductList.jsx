@@ -1,18 +1,25 @@
 import ProductCard from "./ProductCard.jsx";
 import { useGetProductsQuery } from "../features/products/productsApiSlice.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SearchBar from "./SearchBar.jsx";
+import { compareTwoStrings } from "string-similarity";
 
-function ProductList({ category, sortBy, price=100000 }) {
+function ProductList({searchParams, setSearchParams, setMaxPrice }) {
   // Todo: fetch a list of products
+  const price = searchParams?.get("price");
+  const category = searchParams?.get('category');
+  const sortOption = searchParams?.get('sortOption');
+
   const { data, isLoading, isFetching, isError, error } =
     useGetProductsQuery(category);
+
   const [page, setPage] = useState(1);
+  const [allProducts, setAllProducts] = useState(data?.data || []);
   const pageSize = 12;
-  let products = [];
+  let products = allProducts || [];
   let pageCount = 1;
   let begin = 1;
   let end = 1;
-
   function sortProducts(sortBy) {
     switch (sortBy) {
       case "price-asc":
@@ -26,7 +33,7 @@ function ProductList({ category, sortBy, price=100000 }) {
         products.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
-          return dateA > dateB ? -1 : 1;
+          return dateA > dateB ? -1 : 1; // most recent value should be at the beginning of array
         });
         break;
 
@@ -35,13 +42,49 @@ function ProductList({ category, sortBy, price=100000 }) {
     }
   }
 
-  function filterProductsByPrice(price){
-    products = products.filter(p=>p.price<=price);
+  function filterProductsByPrice(price) {
+    if(!price) return;
+    products = products.filter((p) => {
+      const discount = p.discount;
+      const discountedPrice = p.price - (p.price/100)*discount;
+      return discountedPrice <= price;
+    });
   }
 
+  function onSearch(query) {
+    if (!query) {
+      setAllProducts(data.data);
+      return;
+    }
+
+    const newProducts = data.data.filter(({ name }) => {
+      if (name.toLowerCase().includes(query.toLowerCase())) return true;
+      else if (
+        compareTwoStrings(query.toLowerCase(), name.toLowerCase()) >= 0.5
+      )
+        return true;
+      else return false;
+    });
+    setAllProducts(newProducts);
+  }
+
+  useEffect(() => {
+    const products = data?.data;
+    setAllProducts(products);
+
+    let maxPrice=0;
+    for (let i = 0; i < products?.length; i++) {
+      const product = products[i];
+      if (product.price > maxPrice) maxPrice = product.price;
+    }
+    setMaxPrice?.(maxPrice);
+    setSearchParams?.({category, sortOption, price: maxPrice});
+  }, [data]);
+
+
   if (data) {
-    products = Array.from(data.data);
-    sortProducts(sortBy);
+    products = Array.from(allProducts || []);
+    sortProducts(sortOption);
     filterProductsByPrice(price);
 
     pageCount = Math.ceil(products.length / pageSize);
@@ -69,27 +112,33 @@ function ProductList({ category, sortBy, price=100000 }) {
     error.data.message
   ) : (
     <div>
+      <section className="w-9/12 mb-4">
+        <SearchBar placeholder="Search for products..." onSearch={onSearch} />
+      </section>
+
       <div className="flex flex-wrap gap-5">{productList}</div>
 
-      <article className="flex justify-center items-center mt-8 text-sm w-full">
-        <button
-          disabled={page === 1}
-          onClick={prevPage}
-          className="mx-2 border text-sm  py-1 px-2.5 rounded-lg shadow product-search-pagination-btn"
-        >
-          Prev
-        </button>
-        <span>
-          {page} of {pageCount}
-        </span>
-        <button
-          disabled={page === pageCount}
-          onClick={nextPage}
-          className="mx-2 border py-1 px-2.5 rounded-lg shadow product-search-pagination-btn"
-        >
-          Next
-        </button>
-      </article>
+      {pageCount > 1 && (
+        <article className="flex justify-center items-center mt-8 text-sm w-full">
+          <button
+            disabled={page === 1}
+            onClick={prevPage}
+            className="mx-2 border text-sm  py-1 px-2.5 rounded-lg shadow product-search-pagination-btn"
+          >
+            Prev
+          </button>
+          <span>
+            {page} of {pageCount}
+          </span>
+          <button
+            disabled={page === pageCount}
+            onClick={nextPage}
+            className="mx-2 border py-1 px-2.5 rounded-lg shadow product-search-pagination-btn"
+          >
+            Next
+          </button>
+        </article>
+      )}
     </div>
   );
 }

@@ -307,7 +307,7 @@ export function CheckoutItem({ item: product }) {
         <p className="text-lg">{name}</p>
         <span className="">Qty: {qty}</span>
       </article>
-      <span className="ml-auto self-end">${qty * Number(price)}</span>
+      <span className="ml-auto self-end">₹{qty * Number(price)}</span>
     </li>
   );
 }
