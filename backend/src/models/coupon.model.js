@@ -6,6 +6,11 @@ const couponSchema = new mongoose.Schema({
     required: [true, 'coupon code is required']
   },
 
+  discount:{
+    type: Number,
+    required: [true, 'discount percentage is required for coupon entry']
+  },
+
   validTill: {
     type: Date,
     required: [true, 'coupon validity is required']

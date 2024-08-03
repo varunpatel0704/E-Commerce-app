@@ -37,16 +37,16 @@ function TableHOC({
       gotoPage,
     } = useTable(options, useSortBy, usePagination);
     const [pageInput, setPageInput] = useState(pageIndex + 1);
-
+    const [query, setQuery] = useState('');
     return (
       <div className={containerClassName}>
         <h2 className="table-header">
           <span>{heading}</span>
 
           {showSearch&&(<p className="table-search">
-            <input type="text" placeholder="Search..." id="tableSearch" />
+            <input type="text" value={query} onChange={setQuery} placeholder="Search..." id="tableSearch" />
             <button
-              onClick={onSearch}
+              onClick={()=>query && onSearch(query)}
               className="text-xl flex items-center p-2"
             >
               <BsSearch style={{ display: "inline" }} />

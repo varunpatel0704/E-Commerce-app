@@ -125,7 +125,7 @@ function AdminUsers({rows}) {
       containerClassName: "users-table-dashboard",
       showPagination: true,
       pageSize: 4,
-      showSearch: true
+      showSearch: false
     }),
     []
   );

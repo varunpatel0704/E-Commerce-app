@@ -54,7 +54,7 @@ function AdminProducts({rows}) {
   const ProductsTable = useCallback(
     TableHOC({
       showPagination: true,
-      showSearch: true,
+      showSearch: false,
       columns,
       data: rows,
       heading: "PRODUCTS",

@@ -78,6 +78,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: (result, error, productId) => [
         { type: "Product", id: productId },
         { type: "Category", id: "ALL" },
+        {type: 'Insights'}
       ],
     }),
 
@@ -91,6 +92,8 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         { type: "Product", id: "ALL" },
         { type: "Category", id: "ALL" },
         { type: "Error" },
+        {type: 'Insights'}
+
       ],
     }),
   }),

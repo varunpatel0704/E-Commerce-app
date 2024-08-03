@@ -40,11 +40,24 @@ function CreateUserForm() {
     e.preventDefault();
     try {
       if (
-        [fullName, email, password, role].some(
-          (item) => item === undefined || item === ""
-        )
+        // [fullName, email, password].some(
+        //   (item) => item === undefined || item === ""
+        // )
+        !fullName
       ) {
-        console.log("fill all inputs");
+        toast.error('Provide Full Name');
+        return;
+      }
+      if (
+        !email
+      ) {
+        toast.error('Provide Email');
+        return;
+      }
+      if (
+        !password
+      ) {
+        toast.error('Provide Password');
         return;
       }
 

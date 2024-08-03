@@ -4,11 +4,41 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "../components/CartItem.jsx";
 import PriceDetails from "../components/PriceDetails.jsx";
-
+import { useGetCouponMutation } from "../features/dashboard/dashboardApiSlice.js";
+import { applyDiscount, calculateCartValue } from "../features/cart/cartSlice.js";
+import { useDispatch } from "react-redux";
 
 function Cart() {
+  const [getCoupon] = useGetCouponMutation();
   const [couponCode, setCouponCode] = useState("");
-  const [isCouponValid, setIsCouponValid] = useState(true);
+  const [isCouponValid, setIsCouponValid] = useState(false);
+  const [isApplied, setIsApplied] = useState(false);
+  const discount = useSelector(state=>state.cart.discount);
+  const dispatch = useDispatch();
+
+  async function handleApplyCoupon(){
+    if(!couponCode) return;
+    try {
+      const res = await getCoupon(couponCode).unwrap();
+      if(res.data){
+        setIsApplied(true);
+        setIsCouponValid(true);
+        dispatch(applyDiscount(res.data.discount));
+        dispatch(calculateCartValue()); 
+      }
+    } catch (error) {
+      setIsApplied(true);
+      setIsCouponValid(false);
+      console.log('invalidcoupon');
+    }
+  }
+  function handleRemoveCoupon(){
+    dispatch(applyDiscount(0));
+    dispatch(calculateCartValue());
+    setCouponCode('');
+    setIsCouponValid(false);
+    setIsApplied(false);
+  }
 
   const cart = useSelector(state=>state.cart);
   const cartItems = cart.cartItems;
@@ -39,18 +69,28 @@ function Cart() {
             total={cart.total}
           />
 
+          <div className="mt-2 flex">
           <input
-            className="text-sm mt-2 w-9/12 input-base-style"
+            className="text-sm w-8/12 input-base-style"
             type="text"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             autoComplete="off"
             placeholder="Enter Coupon Code"
           />
-          {couponCode &&
+          <button onClick={e=>{
+            e.preventDefault();
+            handleApplyCoupon();
+          }} className="bg-gray-200 shadow border text-gray-600 py-1 px-3 ml-2 rounded-md">Apply</button>
+          <button onClick={e=>{
+            e.preventDefault();
+            handleRemoveCoupon();
+          }} className="bg-gray-200 shadow border text-gray-600 py-1 px-3 ml-2 rounded-md"><VscError/></button>
+          </div>
+          {isApplied &&
             (isCouponValid ? (
               <p className="text-green-600">
-                ${discount} off using "<code>{couponCode}</code>"
+                ₹{discount} off using "<code>{couponCode}</code>"
               </p>
             ) : (
               <div className="flex items-center text-red-400">

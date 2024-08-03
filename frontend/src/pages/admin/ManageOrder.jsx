@@ -11,11 +11,10 @@ function ManageOrder() {
   // fetch order
   const { orderId } = useParams();
   const { data: res, isLoading, isError } = useGetOrderQuery(orderId);
-  const [processOrder, process] = useProcessOrderMutation()
+  const [processOrder, process] = useProcessOrderMutation();
 
   if (isLoading) return <h1>Loading...</h1>;
   else if (isError) return <h1>Error...</h1>;
-
 
   const {
     fullName,
@@ -24,22 +23,25 @@ function ManageOrder() {
     shippingAddress,
     orderItems,
     priceDetails,
-    _id
+    _id,
   } = res.data;
 
   const { address, city, state, pincode } = shippingAddress;
   const addressString = `${address}, ${city}-${pincode}, ${state}`;
   console.log(res.data);
 
-  async function handleProcessOrder(){
+  async function handleProcessOrder() {
     try {
       await processOrder(_id);
-      const nextStatus = orderItems[0].status.currentStatus === 'Confirmed' ? 'Shipped' : 'Delivered';
+      const nextStatus =
+        orderItems[0].status.currentStatus === "Confirmed"
+          ? "Shipped"
+          : "Delivered";
       toast.success(`Order ${nextStatus}`);
     } catch (error) {
-      toast.error('Failed to process order');
-      console.log('Failed to process order ', error);
-    }  
+      toast.error("Failed to process order");
+      console.log("Failed to process order ", error);
+    }
   }
 
   // const order = {
@@ -187,28 +189,32 @@ function ManageOrder() {
         </section>
 
         {/* Replace the below section with this commented code block */}
-        
+
         <section className="w-[48%] p-4 rounded shadow-sm flex flex-col justify-between ">
-          <div className="scroll-hidden h-[367px]">           
+          <div className="scroll-hidden border">
             {/* order items */}
             <h3 className="w-full font-medium text-lg text-black text-opacity-80">
               Order Items
             </h3>
-            <ul className="rounded-bl-md rounded-br-md last:border-b-0 mt-4 scroll-hidden">
-            {orderItems.map((item) => (
-              <CheckoutItem key={item._id} item={item} url={`/`} />
-            ))}
-          </ul>        
+            <ul className="rounded-bl-md h-[320px] rounded-br-md last:border-b-0 mt-4 scroll-hidden">
+              {orderItems.map((item) => (
+                <CheckoutItem key={item._id} item={item} url={`/`} />
+              ))}
+            </ul>
           </div>
           <p>
             <span
               style={{
-                fontWeight: '500',
+                fontWeight: "500",
                 color:
-                  (orderItems[0].status.currentStatus === "Confirmed" && "rgb(255, 44, 44)") || // all the items in the order will have same status so pick any one
-                  (orderItems[0].status.currentStatus === "Shipped" && "#16a34a") ||
-                  (orderItems[0].status.currentStatus === "Delivered" && "#6b7280")||
-                  (orderItems[0].status.currentStatus === "Returned" && "#6b7280"),
+                  (orderItems[0].status.currentStatus === "Confirmed" &&
+                    "rgb(255, 44, 44)") || // all the items in the order will have same status so pick any one
+                  (orderItems[0].status.currentStatus === "Shipped" &&
+                    "#16a34a") ||
+                  (orderItems[0].status.currentStatus === "Delivered" &&
+                    "#6b7280") ||
+                  (orderItems[0].status.currentStatus === "Returned" &&
+                    "#6b7280"),
               }}
             >
               {orderItems[0].status.currentStatus}
@@ -217,9 +223,12 @@ function ManageOrder() {
           </p>
           {/* implement automated cache invalidation with tags */}
           <button
-            disabled={orderItems[0].status.currentStatus === "Delivered" || orderItems[0].status.currentStatus ==="Returned"}
+            disabled={
+              orderItems[0].status.currentStatus === "Delivered" ||
+              orderItems[0].status.currentStatus === "Returned"
+            }
             className="order-mgmnt-button"
-            onClick={ handleProcessOrder }
+            onClick={handleProcessOrder}
           >
             Process
           </button>

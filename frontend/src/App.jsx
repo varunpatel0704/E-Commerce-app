@@ -133,11 +133,11 @@ function App() {
               </Route>
             </Route>
 
-            <Route path="analytics">
+            {/* <Route path="analytics">
               <Route path="bar" element={<BarCharts />} />
               <Route path="pie" element={<PieCharts />} />
               <Route path="line" element={<LineCharts />} />
-            </Route>
+            </Route> */}
 
             <Route path="utilities">
               <Route path="generateCoupon" element={<GenerateCoupon />} />

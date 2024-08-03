@@ -57,10 +57,11 @@
   }
 
   .scroll-hidden {
-    overflow: auto;
+    overflow: scroll;
   }
   .scroll-hidden::-webkit-scrollbar {
     display: none;
+    background-color: white;
   }
 
   .overflow-wrap {

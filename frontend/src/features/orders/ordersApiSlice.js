@@ -22,6 +22,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         { type: "Order", id: "ALL" },
         { type: "Order", id: "USER" },
         { type: "Error" },
+        {type: 'Insights'}
       ],
     }),
 

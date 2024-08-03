@@ -11,7 +11,6 @@ function OrderStatus({ children, description }) {
 }
 
 function OrderItem({ order:{ order, _id} }) {
-  console.log(order)
   const { name, deliveryDate, price, image, status } = order;
   const deliveredOn = deliveryDate? new Date(deliveryDate): undefined;
   let content;

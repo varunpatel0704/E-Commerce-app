@@ -48,7 +48,7 @@ function DashboardLayout() {
         </div>
 
         {/* Analytics */}
-        <div className="flex flex-col gap-4 px-5 mt-2">
+        {/* <div className="flex flex-col gap-4 px-5 mt-2">
           <h3 className="tracking-widest text-sm opacity-40 font-medium">
             ANALYTICS
           </h3>
@@ -74,7 +74,7 @@ function DashboardLayout() {
               Icon={FaChartLine}
             />
           </ul>
-        </div>
+        </div> */}
 
         {/* Utilities */}
         <div className="flex flex-col gap-4 px-5 mt-2">

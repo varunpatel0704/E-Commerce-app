@@ -3,12 +3,14 @@ import { useGetProductsQuery } from "../features/products/productsApiSlice.js";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar.jsx";
 import { compareTwoStrings } from "string-similarity";
+import { Link, useNavigate } from "react-router-dom";
 
-function ProductList({searchParams, setSearchParams, setMaxPrice }) {
+function ProductList({ searchParams, setSearchParams, setMaxPrice }) {
   // Todo: fetch a list of products
   const price = searchParams?.get("price");
-  const category = searchParams?.get('category');
-  const sortOption = searchParams?.get('sortOption');
+  const category = searchParams?.get("category");
+  const sortOption = searchParams?.get("sortOption");
+  const navigate = useNavigate();
 
   const { data, isLoading, isFetching, isError, error } =
     useGetProductsQuery(category);
@@ -43,10 +45,10 @@ function ProductList({searchParams, setSearchParams, setMaxPrice }) {
   }
 
   function filterProductsByPrice(price) {
-    if(!price) return;
+    if (!price) return;
     products = products.filter((p) => {
       const discount = p.discount;
-      const discountedPrice = p.price - (p.price/100)*discount;
+      const discountedPrice = p.price - (p.price / 100) * discount;
       return discountedPrice <= price;
     });
   }
@@ -72,15 +74,14 @@ function ProductList({searchParams, setSearchParams, setMaxPrice }) {
     const products = data?.data;
     setAllProducts(products);
 
-    let maxPrice=0;
+    let maxPrice = 0;
     for (let i = 0; i < products?.length; i++) {
       const product = products[i];
       if (product.price > maxPrice) maxPrice = product.price;
     }
     setMaxPrice?.(maxPrice);
-    setSearchParams?.({category, sortOption, price: maxPrice});
+    setSearchParams?.({ category, sortOption, price: maxPrice });
   }, [data]);
-
 
   if (data) {
     products = Array.from(allProducts || []);
@@ -112,6 +113,29 @@ function ProductList({searchParams, setSearchParams, setMaxPrice }) {
     error.data.message
   ) : (
     <div>
+      <p className="py-1 text-sm text-gray-600">
+        <span>
+          <Link to={"/"} className="header-dialog-link">
+            Home
+          </Link>{" "}
+          &gt;
+        </span>
+        <span
+          className="header-dialog-link"
+          onClick={() => {
+            setSearchParams({
+              category: "all",
+              sortOption: "default",
+              price: 0,
+            });
+          }}
+        >
+          {" "}
+          Products &gt;
+        </span>
+        <span> {category[0].toUpperCase() + category.slice(1)}</span>
+      </p>
+
       <section className="w-9/12 mb-4">
         <SearchBar placeholder="Search for products..." onSearch={onSearch} />
       </section>

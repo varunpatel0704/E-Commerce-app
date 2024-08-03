@@ -304,7 +304,7 @@ export function CheckoutItem({ item: product }) {
         <img src={image} alt="" className="object-contain rounded w-16 h-16" />
       </Link>
       <article className="flex flex-col justify-between h-16">
-        <p className="text-lg">{name}</p>
+        <p className="text-lg">{name.length<=30?name:name.slice(0,30)+'...'}</p>
         <span className="">Qty: {qty}</span>
       </article>
       <span className="ml-auto self-end">₹{qty * Number(price)}</span>

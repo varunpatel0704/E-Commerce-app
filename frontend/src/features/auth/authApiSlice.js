@@ -10,6 +10,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: details,
       }),
+      invalidatesTags: [{type: 'Insights'}]
     }),
     persistentLogin: builder.mutation({
       query: () => ({

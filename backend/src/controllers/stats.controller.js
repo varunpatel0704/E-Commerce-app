@@ -8,7 +8,7 @@ import Payment from "../models/payment.model.js";
 
 function getPercentDiff(curr = 100, prev = 100) {
   if (prev === 0) return curr * 100;
-  else return (curr - prev / prev) * 100;
+  else return ((curr - prev) / prev) * 100;
 }
 
 const getDashboardInsights = asyncHandler(async function (req, res, next) {
@@ -77,19 +77,16 @@ const getDashboardInsights = asyncHandler(async function (req, res, next) {
   });
 
   const allUsersPromise = User.find({}); // to calculate gender ratio
-  const allProductsPromise = Product.find({}); // to calculate inventory
+  const allProductsPromise = Product.find({}) // to calculate inventory
 
-  const start = new Date(
-    today.getFullYear(),
-    today.getMonth() - 6,
-  );
-  const end = new Date(today.getFullYear(), today.getMonth(), 0);
+  const start = new Date(today.getFullYear(), today.getMonth() - 6).toISOString();
+  const end = new Date(today.getFullYear(), today.getMonth(), 0).toISOString();
 
   // calculate revenue and order distribution
   const orderDistributionPromise = Order.find({
     createdAt: {
-      $gte: start.toISOString(),
-      $lte: end.toISOString(),
+      $gte: start,
+      $lte: end,
     },
   });
 
@@ -123,20 +120,28 @@ const getDashboardInsights = asyncHandler(async function (req, res, next) {
     currentNewProducts.length,
     prevNewProducts.length
   );
-  const ordersPercent = getPercentDiff(
-    currentNewOrders.length,
-    prevNewOrders.length
-  );
 
-  const newRevenue = currentNewOrders.reduce(
-    (total, { priceDetails }) => total + priceDetails.total,
-    0
+
+  const { revenue:newRevenue, orders:newOrders } = currentNewOrders.reduce(
+    ({ revenue, orders }, { priceDetails, orderItems }) => ({
+      revenue: revenue + priceDetails.total,
+      orders: orders + orderItems.length,
+    }),
+    { revenue: 0, orders: 0 }
   );
-  const oldRevenue = prevNewOrders.reduce(
-    (total, { priceDetails }) => total + priceDetails.total,
-    0
+  const { revenue:oldRevenue, orders:oldOrders } = prevNewOrders.reduce(
+    ({ revenue, orders }, { priceDetails, orderItems }) => ({
+      revenue: revenue + priceDetails.total,
+      orders: orders + orderItems.length,
+    }),
+    { revenue: 0, orders: 0 }
   );
   const revenuePercent = getPercentDiff(newRevenue, oldRevenue);
+  const ordersPercent = getPercentDiff(
+    newOrders,
+    oldOrders
+  );
+
 
   //calculate gender ratio
   let maleCount = 0;
@@ -144,22 +149,22 @@ const getDashboardInsights = asyncHandler(async function (req, res, next) {
     if (user.gender === "male") maleCount++;
   });
 
-  const malePercent = (maleCount / allUsers.length) * 100;
+  const malePercent = Math.round((maleCount / allUsers.length) * 100);
 
   // calculate revenue and orders distribution
   // return previous 6 months of revenue and order distribution
   const revenueAndOrders = {
     start,
     end,
-    revenue:[],
-    orders:[]
+    revenue: [],
+    orders: [],
   };
   const sortedDistribution = orderDistribution.sort((o1, o2) => {
     const d1 = new Date(o1.createdAt);
     const d2 = new Date(o2.createdAt);
     return d1 < d2 ? -1 : 1; //sorted in ascending order by date.
   });
-
+  // generating revenue and orders arrays
   let it = 0;
   for (let i = 6; i >= 1; i--) {
     const currentMonth = today.getMonth() - i;
@@ -178,17 +183,51 @@ const getDashboardInsights = asyncHandler(async function (req, res, next) {
     revenueAndOrders.orders.push(orders);
   }
 
+  // finding top 5 orders of previous month.
+  let topOrders = []; // maybe use heap to optimize, kth largest...
+  
+  if(prevNewOrders.length + currentNewOrders.length < 10){
+    topOrders = topOrders.concat(prevNewOrders);
+  }
+  else{
+    prevNewOrders.sort((a, b)=>a.priceDetails
+    .total - b.priceDetails.total);
+    const n = prevNewOrders.length;
+    for(let i=n-1; i>=n-10; i--)
+      topOrders.push(prevNewOrders[i]);
+  }
+
   // calculate inventory
-  const inventory = allProducts.map(({ initialStock, stock }) => ({
+  const inventory = allProducts.map(({ initialStock, stock, name, _id }) => ({
     initialStock,
     stock,
+    name, 
+    _id
   }));
 
   const stats = {
-    widget: { usersPercent, productsPercent, ordersPercent, revenuePercent },
+    widget: {
+      users: {
+        percent: usersPercent,
+        value: currentNewUsers.length,
+      },
+      products: {
+        percent: productsPercent,
+        value: currentNewProducts.length,
+      },
+      orders: {
+        percent: ordersPercent,
+        value: newOrders,
+      },
+      revenue: {
+        percent: revenuePercent,
+        value: newRevenue,
+      },
+    },
     genderRatio: malePercent,
     revenueAndOrders,
     inventory,
+    topOrders
   };
 
   return res

@@ -2,8 +2,8 @@ import { Router } from "express";
 import { requireAdmin, requireAuth } from "../middlewares/requireAuth.middleware.js";
 import { getDashboardInsights } from "../controllers/stats.controller.js";
 
-const statRouter = Router();
+const statsRouter = Router();
 
-statRouter.route('/insights').get(requireAuth, requireAdmin, getDashboardInsights)
+statsRouter.route('/insights').get(requireAuth, requireAdmin, getDashboardInsights)
 
-export default statRouter;
+export default statsRouter;

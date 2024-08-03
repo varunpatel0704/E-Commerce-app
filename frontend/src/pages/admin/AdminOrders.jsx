@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import TableHOC from "../../components/TableHOC.jsx";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGetAllOrdersQuery } from "../../features/orders/ordersApiSlice.js";
 
 const columns = [
@@ -30,10 +30,26 @@ function AdminOrdersWrapper() {
   const { data: res, isLoading, isError } = useGetAllOrdersQuery();
   if (isLoading) return <h1>Loading...</h1>;
   else if (isError) return <h1>Error...</h1>;
+  let orders = res?.data;
 
-  const orders = res?.data;
   console.log("all orders ", orders);
   const rows = [];
+
+  // function onSearch(query){
+  //   const newOrders = orders.filter(({ _id, priceDetails }) => {
+  //     if(_id.toLowerCase().includes(query.toLowerCase()))
+  //       return true;
+  //     else if (compareTwoStrings(query.toLowerCase(), _id.toLowerCase()) >= 0.4) 
+  //       return true;
+  //     else if(priceDetails.total === query)
+  //       return true;
+  //     else  
+  //       return false;
+  //     }
+  //   );
+  // }
+
+  
   for (let i = 0; i < orders.length; i++) {
     const {_id, createdAt, priceDetails, orderItems} = orders[i];
     let date = new Date(createdAt);
@@ -59,7 +75,7 @@ function AdminOrders({ rows }) {
     TableHOC({
       showPagination: true,
       pageSize: 6,
-      showSearch: true,
+      showSearch: false,
       columns,
       data: rows,
       heading: "ORDERS",

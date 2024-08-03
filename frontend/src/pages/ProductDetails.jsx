@@ -24,6 +24,14 @@ function ProductDetails() {
     dispatch(calculateCartValue());
     toast.success('Added to cart');
   }
+  function incrementQty(){
+    if(qty + 1 <= product.stock){
+      setQty((q) => (q < 10? q+1 : q));
+    }
+  }
+  function decrementQty(){
+    setQty((q) => (q > 1 ? q - 1 : q))
+  }
 
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Error...</h1>;
@@ -90,14 +98,14 @@ function ProductDetails() {
           <div className="flex gap-1 sm:gap-3 items-center">
             <button
               className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"
-              onClick={() => setQty((q) => (q > 1 ? q - 1 : q))}
+              onClick={decrementQty}
             >
               <FaMinus />
             </button>
             <span className="text-lg">{qty}</span>
             <button
               className="border p-1 sm:p-1.5 bg-gray-200 rounded text-xs sm:text-sm"
-              onClick={() => setQty((q) => (q < 10 ? q + 1 : q))}
+              onClick={incrementQty}
             >
               <FaPlus />
             </button>
@@ -113,7 +121,7 @@ function ProductDetails() {
               <span className="text-green-700 text-opacity-80">
                 <BiSolidCoupon />
               </span>
-              <code>Welcome100</code>
+              <code>Welcome&49</code>
             </li>
           </ul>
         </section>

@@ -21,7 +21,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: user,
       }),
 
-      invalidatesTags: [{type: 'User', id: 'ALL'}]
+      invalidatesTags: [{type: 'User', id: 'ALL'}, {type: 'Insights'}]
     }),
 
     updateUser: builder.mutation({
@@ -39,7 +39,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: email,
       }),
-      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}, {type: 'User', id: 'ALL'}]
+      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}, {type: 'User', id: 'ALL'}, {type: 'Insights'}]
     }),
 
     deleteAccount: builder.mutation({
@@ -48,7 +48,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: email,
       }),
-      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}]
+      invalidatesTags: (result, error, email)=>[{type: 'User', id: email}, {type: 'Insights'}]
     })
   }),
 });

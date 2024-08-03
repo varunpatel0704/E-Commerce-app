@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard.jsx";
+import { Link } from "react-router-dom";
 import ProductFilter from "../components/ProductFilter.jsx";
 import ProductList from "../components/ProductList.jsx";
 import { useGetCategoriesQuery } from "../features/products/productsApiSlice.js";
@@ -46,6 +47,11 @@ function Categories({ categories: categoryList, onClick }) {
   }
   return (
     <div className="w-full">
+      <p className="py-1 text-sm text-gray-600">
+        <span><Link to={'/'} className="header-dialog-link">Home</Link> &gt;</span>
+        <span> Products</span>
+      </p>
+
       <section className="w-9/12 mb-4">
         {/* // implement search functionality */}
         <SearchBar placeholder="Search for categories..." onSearch={onSearch} />
@@ -96,8 +102,6 @@ function ProductListing() {
   const [maxPrice, setMaxPrice] = useState(0);
   // will act as state as well.
   const category = searchParams.get("category");
-  const sortOption = searchParams.get("sortOption");
-  const price = searchParams.get("price");
 
   const { data, isLoading, isFetching, isSuccess, isError, error } =
     useGetCategoriesQuery();
